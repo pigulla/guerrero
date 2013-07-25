@@ -54,6 +54,14 @@ util.inherits(MysqlWriter, AbstractWriter);
 MysqlWriter.prototype.initialize = function (callback) {
     var self = this;
 
+    var truncateQuery = [
+        'SET FOREIGN_KEY_CHECKS=0',
+        util.format('TRUNCATE TABLE %s', mysql.escapeId(this._tables.info)),
+        util.format('TRUNCATE TABLE %s', mysql.escapeId(this._tables.tracks)),
+        util.format('TRUNCATE TABLE %s', mysql.escapeId(this._tables.files)),
+        'SET FOREIGN_KEY_CHECKS=1'
+    ].join(';');
+
     this._connection = mysql.createConnection(this._mysqlOpts);
     this._connection.connect(function (err) {
         if (err) {
@@ -61,7 +69,7 @@ MysqlWriter.prototype.initialize = function (callback) {
             callback(err);
         } else {
             if (self._truncate) {
-                self._connection.query('DELETE FROM files; DELETE FROM info; DELETE FROM tracks;', function (err) {
+                self._connection.query(truncateQuery, function (err) {
                     if (err) {
                         winston.error(err);
                     }
@@ -74,6 +82,7 @@ MysqlWriter.prototype.initialize = function (callback) {
     });
 };
 
+
 /**
  * @inheritdoc
  */
@@ -85,10 +94,12 @@ MysqlWriter.prototype.info = function (fileInfo) {
     );
 
     this._queryQueue.push({
+        file: true,
         fileInfo: fileInfo,
         stmt: stmt
     });
 };
+
 
 /**
  * The worker function for the async queue.
@@ -109,15 +120,16 @@ MysqlWriter.prototype._query = function (task, callback) {
         if (err) {
             winston.error('DB error: %s [%s]', err.toString(), task.stmt);
         } else {
-            if (task.hasOwnProperty('fileId')) {
-                self._insertInfoData(res.insertId, task.fileInfo.info);
-                self._insertTrackData(res.insertId, task.fileInfo.info);
+            if (task.file) {
+                self._insertInfoData(res.insertId, task.fileInfo);
+                self._insertTrackData(res.insertId, task.fileInfo);
             }
         }
 
         callback(err);
     });
 };
+
 
 /**
  * Inserts the info data into the database.
@@ -127,9 +139,13 @@ MysqlWriter.prototype._query = function (task, callback) {
  * @param {guerrero.types.FileInfo} fileInfo The info object.
  */
 MysqlWriter.prototype._insertInfoData = function (fileId, fileInfo) {
-    _.each(fileInfo.info.info, function (v, k) {
+    _.each(fileInfo.info, function (v, k) {
         if (k === 'tracks') {
             return;
+        }
+
+        if (v.length > 255) {
+            winston.warn('value too long for key "%s" for file "%s"', k, fileInfo.formattedName);
         }
 
         var stmt = util.format(
@@ -145,6 +161,7 @@ MysqlWriter.prototype._insertInfoData = function (fileId, fileInfo) {
     }, this);
 };
 
+
 /**
  * Inserts the track data into the database.
  *
@@ -153,7 +170,7 @@ MysqlWriter.prototype._insertInfoData = function (fileId, fileInfo) {
  * @param {guerrero.types.FileInfo} fileInfo The info object.
  */
 MysqlWriter.prototype._insertTrackData = function (fileId, fileInfo) {
-    fileInfo.info.info.tracks.forEach(function (track) {
+    fileInfo.info.tracks.forEach(function (track) {
         if (!track.hasOwnProperty('id')) {
             return;
         }
@@ -161,6 +178,10 @@ MysqlWriter.prototype._insertTrackData = function (fileId, fileInfo) {
         _.each(track, function (v, k) {
             if (k === 'id') {
                 return;
+            }
+
+            if (v.length > 255) {
+                winston.warn('value too long for key "%s" for file "%s"', k, fileInfo.formattedName);
             }
 
             var stmt = util.format(
@@ -177,6 +198,7 @@ MysqlWriter.prototype._insertTrackData = function (fileId, fileInfo) {
     }, this);
 };
 
+
 /**
  * @inheritdoc
  */
@@ -192,6 +214,7 @@ MysqlWriter.prototype.finalize = function (callback) {
         });
     };
 };
+
 
 /**
  * @ignore

@@ -1,5 +1,6 @@
 var _ = require('lodash');
 
+
 /**
  * The abstract base class for all writer implementations.
  *
@@ -18,6 +19,7 @@ var AbstractWriter = function (options) {
     this._collector.on('info', this.info.bind(this));
 };
 
+
 /*jshint -W030*/
 /**
  * The collector for this writer.
@@ -28,6 +30,7 @@ var AbstractWriter = function (options) {
  */
 AbstractWriter.prototype._collector;
 /*jshint -W030*/
+
 
 /**
  * Initialize the writer (e.g., connect to the database, open the output file, etc).
@@ -40,6 +43,7 @@ AbstractWriter.prototype.initialize = function (callback) {
     callback();
 };
 
+
 /**
  * Finalize the writer (e.g., disconnect from the database, close the output file, etc).
  *
@@ -51,6 +55,7 @@ AbstractWriter.prototype.finalize = function (callback) {
     callback();
 };
 
+
 /*jshint -W030*/
 /**
  * Signals the writer that a file has been processed.
@@ -61,6 +66,7 @@ AbstractWriter.prototype.finalize = function (callback) {
  */
 AbstractWriter.prototype.info;
 /*jshint +W030*/
+
 
 /**
  * @ignore

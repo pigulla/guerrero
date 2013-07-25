@@ -11,6 +11,7 @@
     "--warnings-exit-nonzero": true,
     "--": [
         "externs",
+        "../docs/typedefs.js",
         "../src/collector",
         "../src/writer"
     ]

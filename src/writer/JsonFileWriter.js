@@ -6,6 +6,7 @@ var _ = require('lodash'),
 
 var AbstractWriter = require('./AbstractWriter');
 
+
 /**
  * A writer that dumps the data into a JSON file.
  *
@@ -38,6 +39,7 @@ var JsonFileWriter = function (options) {
 
 util.inherits(JsonFileWriter, AbstractWriter);
 
+
 /**
  * @inheritdoc
  */
@@ -55,6 +57,7 @@ JsonFileWriter.prototype.initialize = function (callback) {
     }.bind(this));
 };
 
+
 /**
  * @inheritdoc
  */
@@ -66,6 +69,7 @@ JsonFileWriter.prototype.info = function (info) {
     this._last = info;
 };
 
+
 /**
  * @inheritdoc
  */
@@ -73,6 +77,7 @@ JsonFileWriter.prototype.finalize = function (callback) {
     this._fstream.write(JSON.stringify(this._last, null, 4), this._encoding);
     this._fstream.end(']', this._encoding, callback);
 };
+
 
 /**
  * @ignore

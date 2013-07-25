@@ -2,6 +2,7 @@ var util = require('util');
 
 var AbstractWriter = require('./AbstractWriter');
 
+
 /**
  * A writer that dumps the data on stdout.
  *
@@ -18,12 +19,14 @@ var ConsoleWriter = function (options) {
 
 util.inherits(ConsoleWriter, AbstractWriter);
 
+
 /**
  * @inheritdoc
  */
 ConsoleWriter.prototype.info = function (info) {
     console.log(info.formattedName);
 };
+
 
 /**
  * @ignore

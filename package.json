@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "private": true,
+  "bugs": "https://github.com/pigulla/guerrero/issues",
   "dependencies": {
     "lodash": "~1.3.1",
     "mediainfo": "~0.0.2",
@@ -20,7 +21,8 @@
     "ftp": "~0.3.1",
     "fkt": "~0.1.0",
     "shell-quote": "~1.3.3",
-    "time": "~0.9.2"
+    "time": "~0.9.2",
+    "mysql": "~2.0.0-alpha8"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -35,7 +37,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pigulla/guerrero.git"
+  },
   "author": "Raphael Pigulla <pigulla@four66.com>",
   "license": "BSD"
 }
