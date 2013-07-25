@@ -1,0 +1,17 @@
+{
+    "--title": "guerrero",
+    "--output": "output",
+    "--no-source": true,
+    "--footer": "guerrero",
+    "--external": [
+        "async.queue",
+        "Buffer",
+        "FtpClient"
+    ],
+    "--warnings-exit-nonzero": true,
+    "--": [
+        "externs",
+        "../src/collector",
+        "../src/writer"
+    ]
+}

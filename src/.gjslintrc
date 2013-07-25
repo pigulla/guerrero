@@ -1,0 +1,11 @@
+--jsdoc
+--custom_jsdoc_tags=abstract,cfg,event,extend,ignore,inheritdoc,member,method,mixins,property,readonly,singleton,static
+--disable=1,210,211,217,222
+--max_line_length=120
+#   1: Extra space after "function"
+#  91: Missing docs for parameter: "..."
+# 210: Missing docs for parameter: "..."
+# 211: Found docs for non-existing parameter: "..."
+# 217: Missing @return JsDoc in function with non-trivial return
+# 222: Member "..." must not have @private JsDoc
+
