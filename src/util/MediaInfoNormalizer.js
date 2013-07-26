@@ -356,7 +356,7 @@ MediaInfoNormalizer.prototype._normalizeTrack = function (track) {
             break;
 
         default:
-            this._warn('unhandled track property: "%s" with value "%s"', k, v);
+            winston.warn('unhandled track property: "%s" with value "%s"', k, v);
         }
     }, this);
 
@@ -407,7 +407,7 @@ MediaInfoNormalizer.prototype._normalizeInfo = function (info) {
             break;
 
         default:
-            this._warn('unhandled info property: "%s" with value "%s"', k, v);
+            winston.warn('unhandled track property: "%s" with value "%s"', k, v);
         }
     }, this);
 
@@ -423,6 +423,7 @@ MediaInfoNormalizer.prototype._normalizeInfo = function (info) {
  */
 MediaInfoNormalizer.prototype.normalize = function (info) {
     this._normalizeInfo(info);
+
     info.tracks.forEach(function (track) {
         this._normalizeTrack(track);
     }, this);
