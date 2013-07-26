@@ -8,10 +8,10 @@ var _ = require('lodash'),
 /**
  * A helper class for normalizing values in the object returned by `mediainfo`.
  *
- * @class guerrero.MediaInfoNormalizer
+ * @class guerrero.util.MediaInfoNormalizer
  * @constructor
  * @param {Object} options
- * @cfg {boolean} [bail=false]
+ * @cfg {boolean} [bail=false] If set, an exception is thrown if an unparsable value is encountered.
  */
 var MediaInfoNormalizer = function (options) {
     var opts = _.defaults(options || {}, {
@@ -20,6 +20,17 @@ var MediaInfoNormalizer = function (options) {
 
     this._bail = opts.bail;
 };
+
+
+/*jshint -W030*/
+/**
+ * See `{@link #cfg-bail}`.
+ *
+ * @private
+ * @property {boolean} _bail
+ */
+MediaInfoNormalizer.prototype._bail;
+/*jshint +W030*/
 
 
 /**
@@ -35,6 +46,7 @@ MediaInfoNormalizer.prototype._warn = function () {
         throw new Error(msg);
     }
 };
+
 
 /**
  *

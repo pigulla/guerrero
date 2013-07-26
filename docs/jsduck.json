@@ -12,6 +12,7 @@
     "--": [
         "externs",
         "../docs/typedefs.js",
+        "../src/util",
         "../src/collector",
         "../src/writer"
     ]
