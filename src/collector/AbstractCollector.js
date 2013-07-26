@@ -6,7 +6,7 @@ var _ = require('lodash'),
     Minimatch = require('minimatch').Minimatch,
     winston = require('winston');
 
-var mediaInfoNormalizer = require('../MediaInfoNormalizer');
+var MediaInfoNormalizer = require('../util/MediaInfoNormalizer');
 
 /**
  * The abstract base class for all collector implementations.
@@ -61,6 +61,7 @@ var AbstractCollector = function (options) {
     this._debugFilters = opts.debugFilters;
     this._includes = this._initMinimatch(opts.include, opts.minimatch);
     this._excludes = this._initMinimatch(opts.exclude, opts.minimatch);
+    this._miNormalizer = new MediaInfoNormalizer();
 };
 
 util.inherits(AbstractCollector, events.EventEmitter);
@@ -110,6 +111,7 @@ util.inherits(AbstractCollector, events.EventEmitter);
  */
 AbstractCollector.prototype.concurrency;
 
+
 /**
  * If true, produce (many) additional log output for the filtering process.
  *
@@ -117,6 +119,7 @@ AbstractCollector.prototype.concurrency;
  * @property {boolean} _debugFilters
  */
 AbstractCollector.prototype._debugFilters;
+
 
 /**
  * Array of Minimatchers. A file must satisfy at least one of them in order to be accepted for further processing.
@@ -134,6 +137,15 @@ AbstractCollector.prototype._includes;
  * @property {Array.<minimatch.Minimatch>} _excludes
  */
 AbstractCollector.prototype._excludes;
+
+
+/**
+ * The mediainfo normalizer.
+ *
+ * @private
+ * @property {guerrero.util.MediaInfoNormalizer} _miNormalizer
+ */
+AbstractCollector.protoype._miNormalizer;
 
 
 /**
@@ -277,7 +289,7 @@ AbstractCollector.prototype._extractMediaInfo = function (fileName, data) {
         winston.warn('multiple mediainfo objects found for file "%s"', fileName);
     }
 
-    return mediaInfoNormalizer.normalize(data[0]);
+    return this._miNormalizer.normalize(data[0]);
 };
 
 
