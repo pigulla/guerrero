@@ -145,7 +145,7 @@ AbstractCollector.prototype._excludes;
  * @private
  * @property {guerrero.util.MediaInfoNormalizer} _miNormalizer
  */
-AbstractCollector.protoype._miNormalizer;
+AbstractCollector.prototype._miNormalizer;
 
 
 /**

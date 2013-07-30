@@ -269,7 +269,7 @@ MediaInfoNormalizer.prototype._normalizeTrack = function (track) {
             break;
 
         case 'bits__pixel_frame_':
-            track[k] = this._parseFloat(track[k]);
+            track[k] = parseFloat(track[k]);
             break;
 
         case 'default':
