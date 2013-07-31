@@ -7,10 +7,15 @@ var _ = require('lodash'),
 var AbstractWriter = require('./AbstractWriter');
 
 /**
- * A writer that dumps the data into a MySQL database.
+ * The abstract superclass for asynchronous writers.
+ *
+ * Whenever a fileInfo is to be written, it is first converted into a task object via {@link #fileInfoToTask} method.
+ * Each such task is eventually consumed and processed by the {@link #work} function. If necessary, subclasses may push
+ * additional tasks onto the internal {@link #taskQueue}.
  *
  * @class guerrero.writer.AsyncWriter
  * @extend guerrero.writer.AbstractWriter
+ * @abstract
  * @constructor
  * @param {Object=} options
  * @cfg {number} [concurrency=3] The number of tasks allowed to run concurrently.
@@ -34,10 +39,12 @@ util.inherits(AsyncWriter, AbstractWriter);
 /**
  * The queue for the async tasks.
  *
- * @private
- * @property {async.queue} _queryQueue
+ * Subclasses may push additional tasks onto this queue if needed.
+ *
+ * @protected
+ * @property {async.queue} taskQueue
  */
-AsyncWriter.prototype._queryQueue;
+AsyncWriter.prototype.taskQueue;
 
 /**
  * The concurrency setting for the internal async queue.
@@ -51,12 +58,13 @@ AsyncWriter.prototype._concurrency;
  * The worker function for the async queue.
  *
  * @abstract
- * @method _query
- * @param {guerrero.types.FileInfo} task The task definition.
+ * @protected
+ * @method work
+ * @param {Object} task The task definition.
  * @param {Function} callback
  * @param {?Object} callback.err The error object.
  */
-AsyncWriter.prototype._query;
+AsyncWriter.prototype.work;
 /*jshint +W030*/
 
 
@@ -64,20 +72,39 @@ AsyncWriter.prototype._query;
  * @inheritdoc
  */
 AsyncWriter.prototype.initialize = function (callback) {
-    this._queryQueue = async.queue(this._query.bind(this), this.__concurrency);
+    this.taskQueue = async.queue(this.work.bind(this), this.__concurrency);
+};
+
+
+/**
+ * Converts a `fileInfo` object into its corresponding task object.
+ *
+ * The default implementation simply returns the `fileInfo` object itself.
+ *
+ * @template
+ * @protected
+ * @param {guerrero.types.FileInfo} fileInfo
+ * @return {Object}
+ */
+AsyncWriter.prototype.fileInfoToTask = function (fileInfo) {
+    return fileInfo;
 };
 
 
 /**
  * @inheritdoc
+ * @localdoc Runs {@link #fileInfoToTask} and pushes the returned task object onto the queue.
  */
 AsyncWriter.prototype.info = function (fileInfo) {
-    this._queryQueue.push(fileInfo);
+    this.taskQueue.push(this.fileInfoToTask(fileInfo));
 };
 
 
 /**
- * Cleanup
+ * If any additional steps need to be performed after all tasks have been processed (e.g., disconnecting from the
+ * database) should implement this method. Subclasses should not overwrite {@link #finalize},
+ *
+ * The default implementation simply invokes the passed callback.
  *
  * @template
  * @protected
@@ -91,11 +118,12 @@ AsyncWriter.prototype.beforeFinalize = function (callback) {
 
 /**
  * @inheritdoc
+ * @localdoc Waits for the queue to drain and then invokes the callback.
  */
 AsyncWriter.prototype.finalize = function (callback) {
     var self = this;
 
-    this._queryQueue.drain = function () {
+    this.taskQueue.drain = function () {
         self.beforeFinalize(function (err) {
             if (err) {
                 winston.error(err.toString());

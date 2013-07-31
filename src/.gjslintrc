@@ -1,5 +1,5 @@
 --jsdoc
---custom_jsdoc_tags=abstract,cfg,event,extend,ignore,inheritdoc,member,method,mixins,property,readonly,singleton,static
+--custom_jsdoc_tags=abstract,cfg,event,extend,ignore,inheritdoc,localdoc,member,method,mixins,property,readonly,singleton,static
 --disable=1,210,211,217,222
 --max_line_length=120
 #   1: Extra space after "function"
