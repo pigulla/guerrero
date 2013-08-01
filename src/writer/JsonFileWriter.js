@@ -51,7 +51,7 @@ JsonFileWriter.prototype.initialize = function (callback) {
     });
 
     this._last = null;
-    this._fstream.once('open', function (fd) {
+    this._fstream.once('open', function () {
         this._fstream.write('[', this._encoding);
         callback();
     }.bind(this));

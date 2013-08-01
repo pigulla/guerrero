@@ -74,7 +74,7 @@ AsyncWriter.prototype.work;
  * subclasses *must* call this method and they *must* invoke the callback themselves.
  */
 AsyncWriter.prototype.initialize = function (callback) {
-    this.taskQueue = async.queue(this.work.bind(this), this.__concurrency);
+    this.taskQueue = async.queue(this.work.bind(this), this._concurrency);
 };
 
 
