@@ -106,6 +106,8 @@ MediaInfoNormalizer.prototype._parseBitrate = function (str) {
  */
 MediaInfoNormalizer.prototype._parseFileSize = function (str) {
     var parts = str.split(' '),
+        unit = _.last(parts),
+        number = _.initial(parts).join(''),
         mult = {
             PiB: Math.pow(2, 50),
             TiB: Math.pow(2, 40),
@@ -115,16 +117,12 @@ MediaInfoNormalizer.prototype._parseFileSize = function (str) {
             Bytes: 1
         };
 
-    if (parts.length !== 2) {
+    if (!/^\d+(\.\d+)?$/.test(number)) {
         this._warn('unparsable filesize string "%s"', str);
         return null;
     }
-    if (!mult.hasOwnProperty(parts[1])) {
+    if (!mult.hasOwnProperty(unit)) {
         this._warn('unparsable filesize unit "%s"', parts[1]);
-        return null;
-    }
-    if (!/^\d+(\.\d+)?$/.test(parts[0])) {
-        this._warn('unparsable filesize value "%s"', parts[0]);
         return null;
     }
 

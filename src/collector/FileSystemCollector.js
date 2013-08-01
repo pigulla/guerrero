@@ -29,7 +29,6 @@ var FileSystemCollector = function (options) {
 util.inherits(FileSystemCollector, AbstractCollector);
 
 
-
 /**
  * @protected
  * @inheritdoc
@@ -42,12 +41,13 @@ FileSystemCollector.prototype.list = function (directory, callback) {
     walker.on('file', function (root, stats, next) {
         var file = path.join(root, stats.name);
 
-        if (this._accepted(file)) {
-            files.push(file);
-        }
+        files.push({
+            name: file,
+            size: stats.size
+        });
 
         next();
-    }.bind(this));
+    });
 
     walker.on('errors', function (errs, stats, next) {
         errors = errors.concat(errs);
