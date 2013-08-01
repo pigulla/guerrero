@@ -72,6 +72,7 @@ JsonFileWriter.prototype.info = function (info) {
 
 /**
  * @inheritdoc
+ * @protected
  */
 JsonFileWriter.prototype.finalize = function (callback) {
     this._fstream.write(JSON.stringify(this._last, null, 4), this._encoding);

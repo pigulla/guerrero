@@ -126,6 +126,7 @@ SmbCollector.prototype.downloadChunk = function (file, callback) {
     this._client.downloadFileChunk(file, this.chunkSize, callback);
 };
 
+
 /**
  * @ignore
  */

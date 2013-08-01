@@ -139,6 +139,8 @@ MediaInfoNormalizer.prototype._parseFileSize = function (str) {
  * @return {?number}
  */
 MediaInfoNormalizer.prototype._parseSamplingRate = function (str) {
+    var that;
+
     var parts = str.split(' '),
         mult = {
             GHz: 10e9,

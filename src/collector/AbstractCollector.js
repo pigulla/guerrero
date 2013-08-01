@@ -8,6 +8,8 @@ var _ = require('lodash'),
 
 var MediaInfoNormalizer = require('../util/MediaInfoNormalizer');
 
+// @TODO: Emit events to allow progress monitoring
+
 /**
  * The abstract base class for all collector implementations.
  *
@@ -68,24 +70,6 @@ util.inherits(AbstractCollector, events.EventEmitter);
 
 
 /**
- * ?
- *
- * @event start
- */
-
-/**
- * ?
- *
- * @event end
- */
-
-/**
- * ?
- *
- * @event progress
- */
-
-/**
  * Fired whenever the info about a file has been collected.
  *
  * @event info
@@ -111,7 +95,6 @@ util.inherits(AbstractCollector, events.EventEmitter);
  */
 AbstractCollector.prototype.concurrency;
 
-
 /**
  * If true, produce (many) additional log output for the filtering process.
  *
@@ -119,7 +102,6 @@ AbstractCollector.prototype.concurrency;
  * @property {boolean} _debugFilters
  */
 AbstractCollector.prototype._debugFilters;
-
 
 /**
  * Array of Minimatchers. A file must satisfy at least one of them in order to be accepted for further processing.
@@ -129,7 +111,6 @@ AbstractCollector.prototype._debugFilters;
  */
 AbstractCollector.prototype._includes;
 
-
 /**
  * Array of Minimatchers. A file must not satisfy any of them in order to be accepted for further processing.
  *
@@ -138,7 +119,6 @@ AbstractCollector.prototype._includes;
  */
 AbstractCollector.prototype._excludes;
 
-
 /**
  * The mediainfo normalizer.
  *
@@ -146,7 +126,6 @@ AbstractCollector.prototype._excludes;
  * @property {guerrero.util.MediaInfoNormalizer} _miNormalizer
  */
 AbstractCollector.prototype._miNormalizer;
-
 
 /**
  * The central processing method that subclasses must implement.
@@ -162,7 +141,6 @@ AbstractCollector.prototype._miNormalizer;
  * @param {Array.<{name:string,size:number}>} callback.files The list of files.
  */
 AbstractCollector.prototype.list;
-
 
 /**
  * Subclasses must implement this method and return the mediainfo.
@@ -224,8 +202,6 @@ AbstractCollector.prototype.formatFile = function (file) {
 AbstractCollector.prototype.execute = function (directory, callback) {
     var self = this;
 
-    this.emit('start');
-
     async.waterfall([
         function (cb) {
             // Generate file list
@@ -266,7 +242,6 @@ AbstractCollector.prototype.execute = function (directory, callback) {
             }, cb);
         }
     ], function (err) {
-        self.emit('end');
         callback(err);
     });
 };

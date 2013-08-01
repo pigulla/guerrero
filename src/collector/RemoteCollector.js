@@ -12,7 +12,6 @@ var _ = require('lodash'),
 var AbstractCollector = require('./AbstractCollector'),
     RemoteDirectoryReader = require('./util/RemoteDirectoryReader');
 
-// TODO: refactor this file so that it scans and processes in parallel instead of sequential
 
 /**
  * This class is intended as a base class for collectors that access files on remote systems.
@@ -123,6 +122,7 @@ RemoteCollector.prototype.loadMediaInfo = function (file, callback) {
     });
 };
 
+
 /**
  * Downloads a chunk of the given file and saves it to a local temporary file.
  *
@@ -181,6 +181,7 @@ RemoteCollector.prototype._downloadChunkToTemporaryFile = function (file, callba
         }
     });
 };
+
 
 /**
  * @ignore

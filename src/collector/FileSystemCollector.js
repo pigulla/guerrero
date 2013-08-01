@@ -11,24 +11,23 @@ var _ = require('lodash'),
 
 var AbstractCollector = require('./AbstractCollector.js');
 
+
 /**
- * Bar!
+ * A collector that traverses the (local) file system.
  *
  * @class guerrero.collector.FileSystemCollector
  * @extends guerrero.collector.AbstractCollector
  * @constructor
- * @param {Object} options
+ * @param {Object=} options
  */
 var FileSystemCollector = function (options) {
     /*jshint -W106*/
     FileSystemCollector.super_.apply(this, arguments);
     /*jshint +W106*/
-
-    this._fsizeCache = {};
 };
 
-//    info.guerrero_source_size = this._fsizeCache[info.complete_name];
 util.inherits(FileSystemCollector, AbstractCollector);
+
 
 
 /**
@@ -36,24 +35,19 @@ util.inherits(FileSystemCollector, AbstractCollector);
  * @inheritdoc
  */
 FileSystemCollector.prototype.list = function (directory, callback) {
-    var self = this,
-        walker = walk.walk(directory, this.opts),
+    var walker = walk.walk(directory, this.opts),
         files = [],
         errors = [];
-
-    // keep track of the file sizes so we don't have to query them again in the _postProcessMediaInfo
-    this._fsizeCache = {};
 
     walker.on('file', function (root, stats, next) {
         var file = path.join(root, stats.name);
 
-        if (self._accepted(file)) {
-            self._fsizeCache[file] = stats.size;
+        if (this._accepted(file)) {
             files.push(file);
         }
 
         next();
-    });
+    }.bind(this));
 
     walker.on('errors', function (errs, stats, next) {
         errors = errors.concat(errs);
@@ -73,6 +67,7 @@ FileSystemCollector.prototype.list = function (directory, callback) {
 FileSystemCollector.prototype.loadMediaInfo = function (file, callback) {
     mediainfo(file, callback);
 };
+
 
 /**
  * @ignore

@@ -9,8 +9,9 @@ var _ = require('lodash'),
 var RemoteCollector = require('./RemoteCollector'),
     CurlFtp = require('./util/CurlFtp');
 
+
 /**
- * Foo!
+ * A collector that traverses a FTP remote system using a node FTP client (for traversal) and `curl` (for downloading).
  *
  * @class guerrero.collector.FtpCollector
  * @extends guerrero.collector.RemoteCollector
@@ -57,7 +58,6 @@ FtpCollector.prototype._client;
  * @property {guerrero.collector.util.CurlFtp} _curl
  */
 FtpCollector.prototype._curl;
-
 
 /**
  * The configuration needed to connect to the remote FTP host.
@@ -146,6 +146,7 @@ FtpCollector.prototype.processDirectory = function (directory, callback) {
         }
     });
 };
+
 
 /**
  * @ignore

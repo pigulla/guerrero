@@ -70,6 +70,8 @@ AsyncWriter.prototype.work;
 
 /**
  * @inheritdoc
+ * @localdoc This implementation only sets up the {@link #taskQueue}, it does not invoke the callback. In other words,
+ * subclasses *must* call this method and they *must* invoke the callback themselves.
  */
 AsyncWriter.prototype.initialize = function (callback) {
     this.taskQueue = async.queue(this.work.bind(this), this.__concurrency);
@@ -104,6 +106,10 @@ AsyncWriter.prototype.info = function (fileInfo) {
  * If any additional steps need to be performed after all tasks have been processed (e.g., disconnecting from the
  * database) should implement this method. Subclasses should not overwrite {@link #finalize},
  *
+ * The difference to {@see #finalize} is that `finalize` is invoked when the last file was processed, at which point
+ * there may still be items in the {@see #taskQueue}. `beforeFinalize`, on the other hand, is called when the last item
+ * in the queue has been processed and the writer should perform its final cleanup.
+ *
  * The default implementation simply invokes the passed callback.
  *
  * @template
@@ -118,19 +124,18 @@ AsyncWriter.prototype.beforeFinalize = function (callback) {
 
 /**
  * @inheritdoc
- * @localdoc Waits for the queue to drain and then invokes the callback.
+ * @localdoc Waits for the queue to drain and then invokes the callback. Subclasses must *not* overwrite this method and
+ * implement {@see #beforeFinalize} instead.
  */
 AsyncWriter.prototype.finalize = function (callback) {
-    var self = this;
-
-    this.taskQueue.drain = function () {
-        self.beforeFinalize(function (err) {
+    this.taskQueue.drain = (function () {
+        this.beforeFinalize(function (err) {
             if (err) {
                 winston.error(err.toString());
             }
             callback(err);
         });
-    };
+    }.bind(this));
 };
 
 
