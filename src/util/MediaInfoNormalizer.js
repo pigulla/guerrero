@@ -369,8 +369,8 @@ MediaInfoNormalizer.prototype._normalizeTrack = function (track) {
 /**
  *
  * @private
- * @param {Object} info
- * @return {Object}
+ * @param {guerrero.types.MediaInfo} info
+ * @return {guerrero.types.MediaInfo}
  */
 MediaInfoNormalizer.prototype._normalizeInfo = function (info) {
     _.each(info, function (v, k) {
@@ -420,17 +420,17 @@ MediaInfoNormalizer.prototype._normalizeInfo = function (info) {
 /**
  * Normalizes the mediainfo object.
  *
- * @param {Object} info
- * @return {Object}
+ * @param {guerrero.types.MediaInfo} mediaInfo
+ * @return {guerrero.types.MediaInfo}
  */
-MediaInfoNormalizer.prototype.normalize = function (info) {
-    this._normalizeInfo(info);
+MediaInfoNormalizer.prototype.normalize = function (mediaInfo) {
+    this._normalizeInfo(mediaInfo);
 
-    info.tracks.forEach(function (track) {
+    mediaInfo.tracks.forEach(function (track) {
         this._normalizeTrack(track);
     }, this);
 
-    return info;
+    return mediaInfo;
 };
 
 

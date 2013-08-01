@@ -34,7 +34,7 @@
 
 /**
  * @member guerrero.types.FileInfo
- * @property {Object} info The information object as returned by `mediainfo`.
+ * @property {guerrero.types.MediaInfo} info The mediainfo object.
  */
 //</editor-fold>
 
@@ -53,5 +53,13 @@
 /**
  * @member guerrero.types.ProgressStatus
  * @property {number} total The total number of tasks.
+ */
+//</editor-fold>
+
+//<editor-fold desc="MediaInfo">
+/**
+ * The object returned by `mediainfo`.
+ *
+ * @class guerrero.types.MediaInfo
  */
 //</editor-fold>

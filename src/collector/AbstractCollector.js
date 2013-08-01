@@ -86,6 +86,7 @@ util.inherits(AbstractCollector, events.EventEmitter);
 
 
 /*jshint -W030*/
+
 /**
  * The maximum concurrency. See {@link #cfg-concurrency}.
  *
@@ -248,11 +249,12 @@ AbstractCollector.prototype.execute = function (directory, callback) {
 
 
 /**
- * Normalizes the returned value returned by `mediainfo`.
+ * Normalizes the returned value returned by `mediainfo` or `null` if no info was found.
  *
  * @private
  * @param {string} fileName
  * @param {Object} data
+ * @return {?guerrero.types.MediaInfo}
  */
 AbstractCollector.prototype._extractMediaInfo = function (fileName, data) {
     if (data.length === 0) {
