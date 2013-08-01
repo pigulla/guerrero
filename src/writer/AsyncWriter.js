@@ -17,7 +17,7 @@ var AbstractWriter = require('./AbstractWriter');
  * @extend guerrero.writer.AbstractWriter
  * @abstract
  * @constructor
- * @param {Object=} options
+ * @param {Object} options
  * @cfg {number} [concurrency=3] The number of tasks allowed to run concurrently.
  */
 var AsyncWriter = function (options) {
@@ -25,11 +25,11 @@ var AsyncWriter = function (options) {
     AsyncWriter.super_.apply(this, arguments);
     /*jshint +W106*/
 
-    var opts = _.defaults(options || {}, {
+    _.defaults(options, {
         concurrency: 3
     });
 
-    this._concurrency = opts.concurrency;
+    this._concurrency = options.concurrency;
 };
 
 util.inherits(AsyncWriter, AbstractWriter);

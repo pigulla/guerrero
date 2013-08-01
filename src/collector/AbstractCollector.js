@@ -26,7 +26,7 @@ var MediaInfoNormalizer = require('../util/MediaInfoNormalizer');
  * @abstract
  * @mixins node.events.EventEmitter
  * @constructor
- * @param {Object} options
+ * @param {Object=} options
  * @cfg {string|Array.<string>} include
  * The "accept" minimatch expression(s). A file must satisfy at least one of them in order to be contained in the
  * overall result. If none are supplied, all files are included by default.

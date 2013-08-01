@@ -11,9 +11,7 @@ var AsyncWriter = require('./AsyncWriter');
 /**
  * A writer that dumps the data into a MySQL database.
  *
- * See the
- * [`mysql`](https://npmjs.org/package/mysql#readme) documentation for more information on the available
- * {@link #cfg-mysql options}.
+ * See the [`mysql`][1] documentation for more information.
  *
  * @class guerrero.writer.MysqlWriter
  * @extend guerrero.writer.AsyncWriter
@@ -24,23 +22,26 @@ var AsyncWriter = require('./AsyncWriter');
  * @cfg {string} [tables.files="files"]
  * @cfg {string} [tables.info="info"]
  * @cfg {string} [tables.tracks="tracks"]
- * @cfg {Object.<string,*>} mysql The options object that will be passed to the MySQL client library. See the
- * [documentation]() for more information.
+ * @cfg {Object.<string,*>} mysql
+ * The options that will be passed to the MySQL client library. See the [documentation][2] for more information.
+ *
+ * [1]: https://github.com/felixge/node-mysql
+ * [2]: https://github.com/felixge/node-mysql#connection-options
  */
 var MysqlWriter = function (options) {
     /*jshint -W106*/
     MysqlWriter.super_.apply(this, arguments);
     /*jshint +W106*/
 
-    var opts = _.defaults(options || {}, {
+    _.defaults(options, {
         mysql: {},
         tables: {},
         truncate: false
     });
 
-    this._mysqlOpts = opts.mysql;
-    this._truncate = opts.truncate;
-    this._tables = _.defaults(opts.tables, {
+    this._mysqlOpts = options.mysql;
+    this._truncate = options.truncate;
+    this._tables = _.defaults(options.tables, {
         files: 'files',
         info: 'info',
         tracks: 'tracks'

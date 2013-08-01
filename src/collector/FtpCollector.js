@@ -16,7 +16,7 @@ var RemoteCollector = require('./RemoteCollector'),
  * @class guerrero.collector.FtpCollector
  * @extends guerrero.collector.RemoteCollector
  * @constructor
- * @param {Object} options
+ * @param {Object=} options
  * @cfg {string} [host="localhost"] The hostname.
  * @cfg {number} [port=21] The port.
  * @cfg {string} [user="anonymous"] The username.

@@ -18,7 +18,7 @@ var Client = require('./util/SmbClient'),
  * @class guerrero.collector.SmbCollector
  * @extends guerrero.collector.RemoteCollector
  * @constructor
- * @param {Object} options
+ * @param {Object=} options
  */
 function SmbCollector(options) {
     /*jshint -W106*/

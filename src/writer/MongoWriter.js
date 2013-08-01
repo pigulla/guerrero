@@ -11,28 +11,28 @@ var AsyncWriter = require('./AsyncWriter');
 /**
  * A writer that dumps the data into a MongoDB.
  *
- * See the
- * [`node-mongodb-native`](https://github.com/mongodb/node-mongodb-native#documentation) documentation for more
- * information on the available {@link #cfg-mongo options}.
+ * See the [`node-mongodb-native`][1] documentation for more information.
  *
  * @class guerrero.writer.MongoWriter
  * @extend guerrero.writer.AsyncWriter
  * @constructor
  * @param {Object} options
  * @cfg {boolean} [truncate=false] If `true`, the database will be emptied when the writer is initialized.
- * @cfg {Object} tables The names of the database tables.
- * @cfg {string} [tables.files="files"]
- * @cfg {string} [tables.info="info"]
- * @cfg {string} [tables.tracks="tracks"]
+ * @cfg {string} [host="localhost"] The hostname of the server.
+ * @cfg {number} [port=27017] The port of the server.
+ * @cfg {string} [database="guerrero"] The database to use.
  * @cfg {Object.<string,*>} mongo
- * The options object that will be passed to the MongoDB client library.
+ * The options that will be passed to the MongoDB client library. See the [documentation][2] for more information.
+ *
+ * [1]: https://github.com/mongodb/node-mongodb-native#documentation
+ * [2]: http://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html#mongoclient-connect-options
  */
 var MongoWriter = function (options) {
     /*jshint -W106*/
     MongoWriter.super_.apply(this, arguments);
     /*jshint +W106*/
 
-    var opts = _.defaults(options || {}, {
+    _.defaults(options, {
         host: 'localhost',
         port: 27017,
         database: 'guerrero',
@@ -40,14 +40,16 @@ var MongoWriter = function (options) {
         mongo: {}
     });
 
-    this._mongoOpts = opts.mongo;
-    this._truncate = opts.truncate;
+    this._mongoOpts = options.mongo;
+    this._truncate = options.truncate;
     this._url = util.format(
         'mongodb://%s:%d/%s',
-        this._mongo.host,
-        this._mongo.port,
-        this._mongo.database
+        options.host,
+        options.port,
+        options.database
     );
+
+    winston.info('Connection URL to MongoDB is "%s"', this._url);
 };
 
 util.inherits(MongoWriter, AsyncWriter);

@@ -7,15 +7,11 @@ var _ = require('lodash');
  * @class guerrero.writer.AbstractWriter
  * @abstract
  * @constructor
- * @param {Object=} options
+ * @param {Object} options
  * @cfg {guerrero.collector.AbstractCollector} collector The underlying collector (required).
  */
 var AbstractWriter = function (options) {
-    var opts = _.defaults(options || {}, {
-        collector: null
-    });
-
-    this._collector = opts.collector;
+    this._collector = options.collector;
     this._collector.on('info', this.info.bind(this));
 };
 

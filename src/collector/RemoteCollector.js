@@ -28,7 +28,7 @@ var AbstractCollector = require('./AbstractCollector'),
  * @extends guerrero.collector.AbstractCollector
  * @abstract
  * @constructor
- * @param {Object} options
+ * @param {Object=} options
  * @cfg {number} [chunkSize=10000] The minimum number of bytes to download. Subclasses may download more if necessary
  *                                 but should not download less.
  */

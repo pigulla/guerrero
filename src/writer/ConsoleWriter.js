@@ -9,7 +9,7 @@ var AbstractWriter = require('./AbstractWriter');
  * @class guerrero.writer.ConsoleWriter
  * @extend guerrero.writer.AbstractWriter
  * @constructor
- * @param {Object=} options
+ * @param {Object} options
  */
 var ConsoleWriter = function (options) {
     /*jshint -W106*/
