@@ -15,20 +15,6 @@ module.exports = function (grunt) {
             }
         },
 
-        gjslint: {
-            options: {
-                flags: [
-                    '--flagfile src/.gjslintrc'
-                ],
-                reporter: {
-                    name: 'console'
-                }
-            },
-            all: {
-                src: ['src/**/*.js']
-            }
-        },
-
         exec: {
             jsduck: {
                 cwd: 'docs',
@@ -40,8 +26,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-exec');
-    grunt.loadNpmTasks('grunt-gjslint');
 
     grunt.registerTask('docs', ['clean:docs', 'exec:jsduck']);
-    grunt.registerTask('lint', ['jshint', 'gjslint'])
+    grunt.registerTask('lint', ['jshint'])
 };
