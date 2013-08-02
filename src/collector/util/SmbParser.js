@@ -19,7 +19,7 @@ var regex = {
     };
 
 /**
- * X!
+ * Parser for the output from various SMB commands.
  *
  * @class guerrero.collector.util.SmbParser
  * @static
@@ -27,11 +27,11 @@ var regex = {
 var SmbParser = {};
 
 /**
- * X!
+ * Parses the output of an SMB `du` command.
  *
  * @static
  * @param {string} output
- * @return {Object}
+ * @return {Object.<{total:number,blocks:Object.<string,number>}>}
  */
 SmbParser.du = function (output) {
     var result = {
@@ -56,12 +56,13 @@ SmbParser.du = function (output) {
     return result;
 };
 
+
 /**
- * X!
+ * Parses the output of an SMB `ls` command.
  *
  * @static
  * @param {string} output
- * @return {Object}
+ * @return {Object.<{string:Array.<Object>,directories:Array.<Object>}>}
  */
 SmbParser.ls = function (output) {
     var result = {
@@ -89,6 +90,7 @@ SmbParser.ls = function (output) {
 
     return result;
 };
+
 
 /**
  * @ignore

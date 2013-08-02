@@ -8,6 +8,7 @@ var _ = require('lodash'),
     shellquote = require('shell-quote').quote,
     winston = require('winston');
 
+
 /**
  * A lightweight wrapper around the `smbclient` command line utility.
  *
@@ -18,17 +19,17 @@ var _ = require('lodash'),
  * @cfg {string} username The username. If not provided, the guest account will be used.
  * @cfg {string} password The password. Ignored if `username` is not set.
  */
-var SmbClient = function (options) {
-    var opts = _.defaults(options || {}, {
+function SmbClient(options) {
+    _.defaults(options, {
         service: null,
         username: null,
         password: null
     });
 
-    this._service = opts.service;
-    this._username = opts.username;
-    this._password = opts.password;
-};
+    this._service = options.service;
+    this._username = options.username;
+    this._password = options.password;
+}
 
 
 /**
@@ -71,6 +72,8 @@ SmbClient.prototype.downloadFileChunk = function (file, size, callback) {
             'smbget %s %s | head --bytes=%d',
             shellquote(args), shellquote([path]), size
         ),
+        // Yes, the "binary" encoding type is deprecated. Please check out this question on SO why we use it anyway:
+        // http://stackoverflow.com/questions/17563977
         options = {
             maxBuffer: size,
             encoding: 'binary'
@@ -93,6 +96,31 @@ SmbClient.prototype.downloadFileChunk = function (file, size, callback) {
     });
 };
 
+
+/**
+ * Generates the command line string to execute `smbclient` with.
+ *
+ * @private
+ * @param {string} directory The directory in which to execute the command.
+ * @param {string} command The command itself.
+ * @param {boolean} [hidePassword=false] If `true`, mask the password (e.g., when logging).
+ * @return {Array.<string>}
+ */
+SmbClient.prototype._getCliArgs = function (directory, command, hidePassword) {
+    var args = [this._service, '--no-pass', '--directory=' + directory, '--command=' + command];
+
+    // optional configuration parameters
+    if (this._username) {
+        args.push('--user=' + this._username);
+    }
+    if (this._password) {
+        args.splice(1, 0, hidePassword ? this._password.replace(/./g, 'X') : this._password);
+    }
+
+    return args;
+};
+
+
 /**
  * Executes a SMB command on the remote host and returns the output.
  *
@@ -104,21 +132,13 @@ SmbClient.prototype.downloadFileChunk = function (file, size, callback) {
  * @param {string} callback.stdout
  */
 SmbClient.prototype._executeRemoteCommand = function (directory, command, callback) {
-    var args = [this._service, '--no-pass', '--directory=' + directory, '--command=' + command],
+    var args = this._getCliArgs(directory, command).join(' '),
+        logArgs = this._getCliArgs(directory, command, true).join(' '),
         proc,
         stdout = '',
         stderr = '';
 
-    // optional configuration parameters
-    if (this._username) {
-        args.push('--user=' + this._username);
-    }
-    if (this._password) {
-        // Careful, this will show up in the log!
-        args.splice(1, 0, this._password);
-    }
-
-    winston.silly('executing command "smbclient %s"', args.join(' '));
+    winston.silly('executing command "smbclient %s"', logArgs);
     proc = childprocess.spawn('smbclient', args);
 
     proc.stdout.on('data', function (data) {
@@ -140,6 +160,7 @@ SmbClient.prototype._executeRemoteCommand = function (directory, command, callba
     });
 };
 
+
 /**
  * Executes the `ls` command on the remote host.
  *
@@ -151,6 +172,7 @@ SmbClient.prototype._executeRemoteCommand = function (directory, command, callba
 SmbClient.prototype.ls = function (directory, callback) {
     this._executeRemoteCommand(directory, 'ls', callback);
 };
+
 
 /**
  * Executes the `du` command for a specific file on the remote host.
@@ -164,6 +186,7 @@ SmbClient.prototype.du = function (file, callback) {
     var command = 'du "' + this._escape(file) + '"';
     this._executeRemoteCommand('/', command, callback);
 };
+
 
 /**
  * @ignore

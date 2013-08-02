@@ -21,7 +21,7 @@ var AsyncWriter = require('./AsyncWriter');
  * @cfg {string} [host="localhost"] The hostname of the server.
  * @cfg {number} [port=27017] The port of the server.
  * @cfg {string} [database="guerrero"] The database to use.
- * @cfg {Object.<string,*>} mongo
+ * @cfg {Object} mongo
  * The options that will be passed to the MongoDB client library. See the [documentation][2] for more information.
  *
  * [1]: https://github.com/mongodb/node-mongodb-native#documentation

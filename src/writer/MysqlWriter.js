@@ -22,7 +22,7 @@ var AsyncWriter = require('./AsyncWriter');
  * @cfg {string} [tables.files="files"]
  * @cfg {string} [tables.info="info"]
  * @cfg {string} [tables.tracks="tracks"]
- * @cfg {Object.<string,*>} mysql
+ * @cfg {Object} mysql
  * The options that will be passed to the MySQL client library. See the [documentation][2] for more information.
  *
  * [1]: https://github.com/felixge/node-mysql
@@ -66,7 +66,7 @@ MysqlWriter.prototype._connection;
  * The names of the database tables.
  *
  * @private
- * @property {Object.<string, string>} _tables
+ * @property {Object.<string,string>} _tables
  */
 MysqlWriter.prototype._tables;
 

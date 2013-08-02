@@ -3,16 +3,17 @@ var _ = require('lodash'),
     fkt = require('fkt'),
     winston = require('winston');
 
+
 /**
  * This is a helper class for traversing remote directories.
  *
- * The user of this class is expected to provide a "process" method, which is invoked with the start directory. It must
- * then query its underlying source and return all files and directories within that directory. The recursion through
- * the subdirectories is handled by the RemoteDirectoryReader.
+ * Users of this class must provide a `{@link #cfg-process}` method which will be invoked with the starting directory.
+ * It must then query its underlying source and return all files and directories within that directory. The recursion
+ * through the subdirectories is handled by the ` RemoteDirectoryReader`.
  *
  * @class guerrero.collector.util.RemoteDirectoryReader
  * @constructor
- * @param {Object.<string,*>} options
+ * @param {Object} options
  * @cfg {number} concurrency The maximum number of concurrent operations on the remote host.
  * @cfg {Function} format
  * A function that formats raw file names in something more suitable for logs, e.g. by prefixing the actual file name
@@ -31,22 +32,23 @@ var _ = require('lodash'),
 var RemoteDirectoryReader = function (options) {
     this._running = false;
 
-    var opts = _.defaults(options || {}, {
+    _.defaults(options, {
         concurrency: 1,
         format: fkt.identity,
         progress: fkt.noop,
         process: null
     });
 
-    this._formatFile = opts.format;
-    this._process = opts.process;
-    this._progress = opts.progress;
-    this._concurrency = opts.concurrency;
+    this._formatFile = options.format;
+    this._process = options.process;
+    this._progress = options.progress;
+    this._concurrency = options.concurrency;
 };
+
 
 /*jshint -W030*/
 /**
- * d
+ * The progress callback that is invoked whenever a directory was processed.
  *
  * @private
  * @property {Function} _process
@@ -57,7 +59,7 @@ RemoteDirectoryReader.prototype._process;
  * The maximum number of workers to run concurrently
  *
  * @private
- * @property {number} concurrency
+ * @property {number} _concurrency
  */
 RemoteDirectoryReader.prototype._concurrency;
 
@@ -83,7 +85,6 @@ RemoteDirectoryReader.prototype._running;
  */
 RemoteDirectoryReader.prototype._tasksDone;
 
-
 /**
  * List of all files found so far.
  *
@@ -91,7 +92,6 @@ RemoteDirectoryReader.prototype._tasksDone;
  * @property {Array.<{name:string,size:number}>} _fileList
  */
 RemoteDirectoryReader.prototype._fileList;
-
 
 /**
  * List of all errors encountered so far.
@@ -236,6 +236,7 @@ RemoteDirectoryReader.prototype._enqueue = function (directory) {
     this._queue.push(directory);
     this._notify();
 };
+
 
 /**
  * @ignore
