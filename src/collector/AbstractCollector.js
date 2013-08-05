@@ -1,5 +1,5 @@
-var util = require('util'),
-    events = require('events');
+var events = require('events'),
+    util = require('util');
 
 var _ = require('lodash'),
     async = require('async'),
@@ -39,15 +39,15 @@ var MediaInfoNormalizer = require('../util/MediaInfoNormalizer');
  * @cfg {Object} minimatch
  * The {@link minimatch configuration} object. The `{@link minimatch#dot}` and `{@link minimatch#matchBase}` options
  * are set unless they are specifically overridden.
- * @cfg {boolean} debugFilters
- * If `true`, produce (much) more log messages when filtering files. Use this to debug why a certain file was (or
- * wasn`t) ignored.
+ * @cfg {boolean} verboseFilters
+ * If `true`, produce an info-level log message for each file indicating what include/exclude pattern(s) caused the file
+ * to be accepted or rejected.
  */
 var AbstractCollector = function (options) {
     events.EventEmitter.call(this);
 
     var opts = _.defaults(options || {}, {
-        debugFilters: true,
+        verboseFilters: true,
         concurrency: 3,
         include: [],
         exclude: [],
@@ -60,7 +60,7 @@ var AbstractCollector = function (options) {
     });
 
     this.concurrency = opts.concurrency;
-    this._debugFilters = opts.debugFilters;
+    this._verboseFilters = opts.verboseFilters;
     this._includes = this._initMinimatch(opts.include, opts.minimatch);
     this._excludes = this._initMinimatch(opts.exclude, opts.minimatch);
     this._miNormalizer = new MediaInfoNormalizer();
@@ -100,9 +100,9 @@ AbstractCollector.prototype.concurrency;
  * If true, produce (many) additional log output for the filtering process.
  *
  * @private
- * @property {boolean} _debugFilters
+ * @property {boolean} _verboseFilters
  */
-AbstractCollector.prototype._debugFilters;
+AbstractCollector.prototype._verboseFilters;
 
 /**
  * Array of Minimatchers. A file must satisfy at least one of them in order to be accepted for further processing.
@@ -271,54 +271,76 @@ AbstractCollector.prototype._extractMediaInfo = function (fileName, data) {
 
 
 /**
- * Checks if a filename is accepted by this instance's `{@link #_includes}` and `{@link #_excludes}` matchers.
+ * Determines which minimatcher, if any, matched the given filename.
  *
  * @private
- * @param {string} file
- * @return {boolean}
+ * @param {string} fileName The name of the file.
+ * @param {Array.<minimatch.Minimatch>} patterns The patterns to check against.
+ * @returns {string|boolean} Returns the pattern string that matched or `false` if `patterns` had no entries or none of
+ * them matched.
  */
-AbstractCollector.prototype._accepted = function (file) {
-    var includeMatch,
-        excludeMatch,
-        included,
-        excluded;
-
-    if (this._includes.length === 0) {
-        included = true;
-    } else {
-        included = this._includes.some(function (mm) {
-            if (mm.match(file)) {
-                includeMatch = mm;
-                return true;
-            } else {
-                return false;
-            }
-        });
+AbstractCollector.prototype._firstMatchingPattern = function (fileName, patterns) {
+    for (var i = 0; i < patterns.length; ++i) {
+        if (patterns[i].match(fileName)) {
+            return patterns[i].pattern;
+        }
     }
 
-    excluded = this._excludes.some(function (mm) {
-        if (mm.match(file)) {
-            excludeMatch = mm;
-            return true;
-        } else {
-            return false;
-        }
-    });
-
-    return included && !excluded;
+    return false;
 };
 
 
 /**
- * Produces more verbose logging output for filters. See `{@link #cfg-debugFilters}`.
+ * Checks if a filename is accepted by this instance's `{@link #_includes}` and `{@link #_excludes}` matchers.
+ *
+ * If `{@link #cfg-verboseFilters}` is enabled, an additional log message is generated.
  *
  * @private
- * @param {string} file The file name.
- * @param {minimatch.Minimatch} includeMatch
- * @param {minimatch.Minimatch} excludeMatch
+ * @param {string} fileName The name of the file.
+ * @return {boolean}
  */
-AbstractCollector.prototype._logFilterMessage = function (file, includeMatch, excludeMatch) {
-    // TODO
+AbstractCollector.prototype._accepted = function (fileName) {
+    var excludePattern = this._firstMatchingPattern(fileName, this._excludes),
+        includePattern = this._includes.length ? this._firstMatchingPattern(fileName, this._includes) : true;
+
+    if (this._verboseFilters) {
+        this._logFilterMessage(fileName, includePattern, excludePattern);
+    }
+
+    return includePattern && !excludePattern;
+};
+
+
+/**
+ * Logs a debug message as to why a file passed the filters or not.
+ *
+ * @private
+ * @param {string} fileName The file name.
+ * @param {string|boolean|null} includedBy The pattern which actually included the file. Can either be a string (the
+ * pattern that matched), `true` (no include patterns were defined so the file was included by default) or `null` (there
+ * was at least one include pattern but none of them matched).
+ * @param {?string} excludedBy The pattern which actually excluded the file. If `null`, there either were no exclude
+ * patterns specified or none of them matched.
+ */
+AbstractCollector.prototype._logFilterMessage = function (fileName, includedBy, excludedBy) {
+    var includeMsg,
+        excludeMsg;
+
+    if (includedBy === true) {
+        includeMsg = 'included by default';
+    } else if (includedBy === null) {
+        includeMsg = 'not included';
+    } else {
+        includeMsg = 'included by pattern "' + includedBy + '"';
+    }
+
+    if (excludedBy) {
+        excludeMsg = 'excluded by pattern "' + excludedBy + '"';
+    } else {
+        excludeMsg = 'not excluded';
+    }
+
+    winston.info('File "%s" was %s %s %s', fileName, includeMsg, excludedBy ? 'but' : 'and', excludeMsg);
 };
 
 
