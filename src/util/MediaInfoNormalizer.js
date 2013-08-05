@@ -77,7 +77,7 @@ MediaInfoNormalizer.prototype._parseBitrate = function (str) {
     var parts = str.split(' '),
         unit = parts[parts.length - 1],
         value = parts.splice(0, parts.length - 1).join(''),
-        mult = {
+        factor = {
             Tbps: 10e12,
             Gbps: 10e9,
             Mbps: 10e6,
@@ -85,7 +85,7 @@ MediaInfoNormalizer.prototype._parseBitrate = function (str) {
             bps: 1
         };
 
-    if (!mult.hasOwnProperty(unit)) {
+    if (!factor.hasOwnProperty(unit)) {
         this._warn('unparsable bitrate unit "%s"', unit);
         return null;
     }
@@ -94,7 +94,7 @@ MediaInfoNormalizer.prototype._parseBitrate = function (str) {
         return null;
     }
 
-    return mult[unit] * parseFloat(value.replace(/ /g, ''));
+    return factor[unit] * parseFloat(value.replace(/ /g, ''));
 };
 
 
@@ -108,7 +108,7 @@ MediaInfoNormalizer.prototype._parseFileSize = function (str) {
     var parts = str.split(' '),
         unit = _.last(parts),
         number = _.initial(parts).join(''),
-        mult = {
+        factor = {
             PiB: Math.pow(2, 50),
             TiB: Math.pow(2, 40),
             GiB: Math.pow(2, 30),
@@ -121,12 +121,12 @@ MediaInfoNormalizer.prototype._parseFileSize = function (str) {
         this._warn('unparsable filesize string "%s"', str);
         return null;
     }
-    if (!mult.hasOwnProperty(unit)) {
+    if (!factor.hasOwnProperty(unit)) {
         this._warn('unparsable filesize unit "%s"', parts[1]);
         return null;
     }
 
-    return Math.round(mult[parts[1]] * parseFloat(parts[0]));
+    return Math.round(factor[parts[1]] * parseFloat(parts[0]));
 };
 
 
@@ -140,7 +140,7 @@ MediaInfoNormalizer.prototype._parseSamplingRate = function (str) {
     var that;
 
     var parts = str.split(' '),
-        mult = {
+        factor = {
             GHz: 10e9,
             MHz: 10e6,
             KHz: 10e3,
@@ -151,7 +151,7 @@ MediaInfoNormalizer.prototype._parseSamplingRate = function (str) {
         this._warn('unparsable sampling rate string "%s"', str);
         return null;
     }
-    if (!mult.hasOwnProperty(parts[1])) {
+    if (!factor.hasOwnProperty(parts[1])) {
         this._warn('unparsable sampling rate unit "%s"', parts[1]);
         return null;
     }
@@ -160,7 +160,7 @@ MediaInfoNormalizer.prototype._parseSamplingRate = function (str) {
         return null;
     }
 
-    return mult[parts[1]] * parseFloat(parts[0]);
+    return factor[parts[1]] * parseFloat(parts[0]);
 };
 
 
@@ -176,7 +176,7 @@ MediaInfoNormalizer.prototype._parseTime = function (str) {
         i,
         part,
         matches,
-        mult = {
+        factor = {
             h: 3600,
             mn: 60,
             s: 1,
@@ -187,7 +187,7 @@ MediaInfoNormalizer.prototype._parseTime = function (str) {
         part = parts[i];
         matches = part.match(/^(\d+)(\w+)$/);
 
-        if (!mult.hasOwnProperty(matches[2])) {
+        if (!factor.hasOwnProperty(matches[2])) {
             this._warn('unparsable time unit "%s"', matches[2]);
             return null;
         }
@@ -196,7 +196,7 @@ MediaInfoNormalizer.prototype._parseTime = function (str) {
             return null;
         }
 
-        result += parseInt(matches[1], 10) * mult[matches[2]];
+        result += parseInt(matches[1], 10) * factor[matches[2]];
     }
 
     return result;

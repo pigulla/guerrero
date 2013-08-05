@@ -3,11 +3,11 @@ var _ = require('lodash'),
 
 var regex = {
         lsFile: new XRegExp(
-            '^  (?<filename>.+?)\\s+(R\\s)?(?<size>\\d+)  ' +
+            '^\\s\\s(?<filename>.+?)\\s+(R\\s)?(?<size>\\d+)  ' +
             '(?<date>[A-Z][a-z]{2} [A-Z][a-z]{2}\\s+\\d{1,2} \\d{1,2}:\\d{2}:\\d{2} \\d{4})$'
         ),
         lsDir: new XRegExp(
-            '^  (?<filename>.+?)\\s+D\\s+(?<size>0)  ' +
+            '^\\s\\s(?<filename>.+?)\\s+D\\s+(?<size>0)  ' +
             '(?<date>[A-Z][a-z]{2} [A-Z][a-z]{2}\\s+\\d{1,2} \\d{1,2}:\\d{2}:\\d{2} \\d{4})$'
         ),
         duTotal: new XRegExp(

@@ -40,6 +40,45 @@ var JsonFileWriter = function (options) {
 util.inherits(JsonFileWriter, AbstractWriter);
 
 
+/*jshint -W030*/
+/**
+ * The buffer for the most recent FileInfo object.
+ *
+ * This class writes to a stream, i.e. each data block is written separately. This means that when {@link #info} is
+ * called we do not know whether there will be more data or not so we can't decide whether to add a comma to the output
+ * or not. This problem is solved by shifting the output by one element.
+ *
+ * @private
+ * @property {?guerrero.types.FileInfo} _last
+ */
+JsonFileWriter.prototype._last;
+
+/**
+ * The name of the output file.
+ *
+ * @private
+ * @property {string} _filename
+ */
+JsonFileWriter.prototype._filename;
+
+/**
+ * The mode with which the output file will be opened.
+ *
+ * @private
+ * @property {number} _mode
+ */
+JsonFileWriter.prototype._mode;
+
+/**
+ * The character encoding for the output.
+ *
+ * @private
+ * @property {string} _encoding
+ */
+JsonFileWriter.prototype._encoding;
+/*jshint +W030*/
+
+
 /**
  * @inheritdoc
  */
@@ -75,7 +114,10 @@ JsonFileWriter.prototype.info = function (info) {
  * @protected
  */
 JsonFileWriter.prototype.finalize = function (callback) {
-    this._fstream.write(JSON.stringify(this._last, null, 4), this._encoding);
+    if (this._last) {
+        this._fstream.write(JSON.stringify(this._last, null, 4), this._encoding);
+    }
+
     this._fstream.end(']', this._encoding, callback);
 };
 

@@ -9,9 +9,9 @@ var AbstractWriter = require('./AbstractWriter');
 /**
  * The abstract superclass for asynchronous writers.
  *
- * Whenever a fileInfo is to be written, it is first converted into a task object via {@link #fileInfoToTask} method.
+ * Whenever a fileInfo is to be written it is first converted into a task object via the {@link #fileInfoToTask} method.
  * Each such task is eventually consumed and processed by the {@link #work} function. If necessary, subclasses may push
- * additional tasks onto the internal {@link #taskQueue}.
+ * additional tasks onto the internal {@link #taskQueue} as needed.
  *
  * @class guerrero.writer.AsyncWriter
  * @extend guerrero.writer.AbstractWriter
@@ -110,7 +110,7 @@ AsyncWriter.prototype.info = function (fileInfo) {
  * there may still be items in the {@see #taskQueue}. `beforeFinalize`, on the other hand, is called when the last item
  * in the queue has been processed and the writer should perform its final cleanup.
  *
- * The default implementation simply invokes the passed callback.
+ * The default implementation simply invokes the passed callback directly.
  *
  * @template
  * @protected
@@ -124,7 +124,7 @@ AsyncWriter.prototype.beforeFinalize = function (callback) {
 
 /**
  * @inheritdoc
- * @localdoc Waits for the queue to drain and then invokes the callback. Subclasses must *not* overwrite this method and
+ * @localdoc Waits for the queue to drain and then invokes the callback. Subclasses must *not* overwrite this method but
  * implement {@see #beforeFinalize} instead.
  */
 AsyncWriter.prototype.finalize = function (callback) {
