@@ -92,28 +92,29 @@ SmbCollector.prototype.processDirectory = function (directory, callback) {
     this._client.ls(directory, function (err, output) {
         if (err) {
             callback(err);
-        } else {
-            var ls = Parser.ls(output),
-                result = {
-                    files: [],
-                    directories: []
-                },
-                skipDot = function (directory) {
-                    return !/^\.{1,2}$/.test(directory.name);
-                };
-
-            result.files = ls.files.map(function (file) {
-                return {
-                    name: directory + '/' + file.name,
-                    size: file.size
-                };
-            });
-            result.directories = ls.directories.filter(skipDot).map(function (file) {
-                return directory + '/' + file.name;
-            });
-
-            callback(null, result);
+            return;
         }
+
+        var ls = Parser.ls(output),
+            result = {
+                files: [],
+                directories: []
+            },
+            skipDot = function (directory) {
+                return !/^\.{1,2}$/.test(directory.name);
+            };
+
+        result.files = ls.files.map(function (file) {
+            return {
+                name: directory + '/' + file.name,
+                size: file.size
+            };
+        });
+        result.directories = ls.directories.filter(skipDot).map(function (file) {
+            return directory + '/' + file.name;
+        });
+
+        callback(null, result);
     });
 };
 

@@ -6,8 +6,8 @@ var _ = require('lodash'),
     S = require('string'),
     winston = require('winston');
 
-var RemoteCollector = require('./RemoteCollector'),
-    CurlFtp = require('./util/CurlFtp');
+var CurlFtp = require('./util/CurlFtp'),
+    RemoteCollector = require('./RemoteCollector');
 
 
 /**
