@@ -10,7 +10,7 @@ var _ = require('lodash'),
  *
  * @class guerrero.util.MediaInfoNormalizer
  * @constructor
- * @param {Object} options
+ * @param {Object=} options
  * @cfg {boolean} [bail=false] If set, an exception is thrown if an unparsable value is encountered.
  */
 var MediaInfoNormalizer = function (options) {
@@ -34,6 +34,7 @@ MediaInfoNormalizer.prototype._bail;
 
 
 /**
+ * Logs a warning message and causes an exception to be thrown if {@link #cfg-bail} is set.
  *
  * @private
  * @throws Error
@@ -49,10 +50,12 @@ MediaInfoNormalizer.prototype._warn = function () {
 
 
 /**
+ * Parses a string as a boolean. Supported values are `"Yes"` and `"No"`.
  *
  * @private
- * @param {string} str
- * @return {?boolean}
+ * @param {string} str The input string.
+ * @return {?boolean} Returns the parsed value of `null` if it could not be parsed.
+ * @throws Error If `str` could not be parsed and {@link #cfg-bail} is enabled.
  */
 MediaInfoNormalizer.prototype._parseBool = function (str) {
     switch (str) {
@@ -68,10 +71,12 @@ MediaInfoNormalizer.prototype._parseBool = function (str) {
 
 
 /**
+ * Parses a string as a bit rate.
  *
  * @private
- * @param {string} str
- * @return {?number}
+ * @param {string} str The input string.
+ * @return {?number} Returns the parsed value of `null` if it could not be parsed.
+ * @throws Error If `str` could not be parsed and {@link #cfg-bail} is enabled.
  */
 MediaInfoNormalizer.prototype._parseBitrate = function (str) {
     var parts = str.split(' '),
@@ -99,10 +104,12 @@ MediaInfoNormalizer.prototype._parseBitrate = function (str) {
 
 
 /**
+ * Parses a string as a file size.
  *
  * @private
- * @param {string} str
- * @return {?number}
+ * @param {string} str The input string.
+ * @return {?number} Returns the parsed value of `null` if it could not be parsed.
+ * @throws Error If `str` could not be parsed and {@link #cfg-bail} is enabled.
  */
 MediaInfoNormalizer.prototype._parseFileSize = function (str) {
     var parts = str.split(' '),
@@ -131,10 +138,12 @@ MediaInfoNormalizer.prototype._parseFileSize = function (str) {
 
 
 /**
+ * Parses a string as a sampling rate.
  *
  * @private
- * @param {string} str
- * @return {?number}
+ * @param {string} str The input string.
+ * @return {?number} Returns the parsed value of `null` if it could not be parsed.
+ * @throws Error If `str` could not be parsed and {@link #cfg-bail} is enabled.
  */
 MediaInfoNormalizer.prototype._parseSamplingRate = function (str) {
     var that;
@@ -165,12 +174,14 @@ MediaInfoNormalizer.prototype._parseSamplingRate = function (str) {
 
 
 /**
+ * Parses a string as a duration.
  *
  * @private
- * @param {string} str
- * @return {?number}
+ * @param {string} str The input string.
+ * @return {?boolean} Returns the parsed value of `null` if it could not be parsed.
+ * @throws Error If `str` could not be parsed and {@link #cfg-bail} is enabled.
  */
-MediaInfoNormalizer.prototype._parseTime = function (str) {
+MediaInfoNormalizer.prototype._parseDuration = function (str) {
     var parts = str.split(' '),
         result = 0,
         i,
@@ -204,12 +215,14 @@ MediaInfoNormalizer.prototype._parseTime = function (str) {
 
 
 /**
+ * Parses a string as an integer with a unit.
  *
  * @private
- * @param {string} str
- * @param {string} unit
- * @param {string=} spaceSep
- * @return {?number}
+ * @param {string} str The input string.
+ * @param {string} unit The expected unit.
+ * @param {string=} spaceSep An optional separator used within the number part of the string.
+ * @return {?number} Returns the parsed value of `null` if it could not be parsed.
+ * @throws Error If `str` could not be parsed and {@link #cfg-bail} is enabled.
  */
 MediaInfoNormalizer.prototype._parseIntUnit = function (str, unit, spaceSep) {
     var regexp = new RegExp('^(\\d{1,3}(?:' + (spaceSep ? '\\s' : '') + '\\d{3})*) ' + unit + '$'),
@@ -229,11 +242,13 @@ MediaInfoNormalizer.prototype._parseIntUnit = function (str, unit, spaceSep) {
 
 
 /**
+ * Parses a string as a float with a unit.
  *
  * @private
- * @param {string} str
- * @param {string} unit
- * @return {?number}
+ * @param {string} str The input string.
+ * @param {string} unit The expected unit.
+ * @return {?number} Returns the parsed value of `null` if it could not be parsed.
+ * @throws Error If `str` could not be parsed and {@link #cfg-bail} is enabled.
  */
 MediaInfoNormalizer.prototype._parseFloatUnit = function (str, unit) {
     var regexp = new RegExp('^(\\d+\\.\\d+) ' + unit + '$'),
@@ -249,6 +264,7 @@ MediaInfoNormalizer.prototype._parseFloatUnit = function (str, unit) {
 
 
 /**
+ * Normalizes values of a track in-place.
  *
  * @private
  * @param {Object} track
@@ -282,7 +298,7 @@ MediaInfoNormalizer.prototype._normalizeTrack = function (track) {
 
         case 'duration':
         case 'delay_relative_to_video':
-            track[k] = this._parseTime(v);
+            track[k] = this._parseDuration(v);
             break;
 
         case 'width':
@@ -365,6 +381,7 @@ MediaInfoNormalizer.prototype._normalizeTrack = function (track) {
 
 
 /**
+ * Normalizes info in-place.
  *
  * @private
  * @param {guerrero.types.MediaInfo} info
@@ -379,7 +396,7 @@ MediaInfoNormalizer.prototype._normalizeInfo = function (info) {
             break;
 
         case 'duration':
-            info[k] = this._parseTime(v);
+            info[k] = this._parseDuration(v);
             break;
 
         case 'file_size':
@@ -416,7 +433,7 @@ MediaInfoNormalizer.prototype._normalizeInfo = function (info) {
 
 
 /**
- * Normalizes the mediainfo object.
+ * Normalizes the mediainfo object in-place.
  *
  * @param {guerrero.types.MediaInfo} mediaInfo
  * @return {guerrero.types.MediaInfo}
