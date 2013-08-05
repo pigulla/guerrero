@@ -47,7 +47,7 @@ var AbstractCollector = function (options) {
     events.EventEmitter.call(this);
 
     var opts = _.defaults(options || {}, {
-        verboseFilters: true,
+        verboseFilters: false,
         concurrency: 3,
         include: [],
         exclude: [],
