@@ -6,7 +6,7 @@ var _ = require('lodash'),
     async = require('async'),
     filesize = require('filesize'),
     mediainfo = require('mediainfo'),
-    walk = require('walk'),
+    Glob = require('glob').Glob,
     winston = require('winston');
 
 var AbstractCollector = require('./AbstractCollector.js');
@@ -34,28 +34,31 @@ util.inherits(FileSystemCollector, AbstractCollector);
  * @inheritdoc
  */
 FileSystemCollector.prototype.list = function (directory, callback) {
-    var walker = walk.walk(directory, this.opts),
-        files = [],
-        errors = [];
+    var result = [],
+        glob = new Glob('**/*', {
+            cwd: directory,
+            dot: false,
+            mark: true,
+            nosort: true,
+            silent: true
+        });
 
-    walker.on('file', function (root, stats, next) {
-        var file = path.join(root, stats.name);
+    glob.on('match', function (filename) {
+        var file = path.join(directory, filename),
+            stats = glob.statCache[file];
 
-        files.push({
+        result.push({
             name: file,
             size: stats.size
         });
-
-        next();
     });
 
-    walker.on('errors', function (errs, stats, next) {
-        errors = errors.concat(errs);
-        next();
+    glob.on('error', function (err) {
+        winston.error('error processing file or directory: %s', err.toString());
     });
 
-    walker.on('end', function () {
-        callback(null, files);
+    glob.on('end', function () {
+        callback(null, result);
     });
 };
 
