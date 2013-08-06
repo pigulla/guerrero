@@ -5,8 +5,8 @@ var fs = require('fs'),
 var _ = require('lodash'),
     async = require('async'),
     filesize = require('filesize'),
-    mediainfo = require('mediainfo'),
     Glob = require('glob').Glob,
+    mediainfo = require('mediainfo'),
     winston = require('winston');
 
 var AbstractCollector = require('./AbstractCollector.js');
