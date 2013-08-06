@@ -132,13 +132,13 @@ SmbClient.prototype._getCliArgs = function (directory, command, hidePassword) {
  * @param {string} callback.stdout
  */
 SmbClient.prototype._executeRemoteCommand = function (directory, command, callback) {
-    var args = this._getCliArgs(directory, command).join(' '),
-        logArgs = this._getCliArgs(directory, command, true).join(' '),
+    var args = this._getCliArgs(directory, command),
+        logArgStr = this._getCliArgs(directory, command, true).join(' '),
         proc,
         stdout = '',
         stderr = '';
 
-    winston.silly('executing command "smbclient %s"', logArgs);
+    winston.silly('executing command "smbclient %s"', logArgStr);
     proc = childprocess.spawn('smbclient', args);
 
     proc.stdout.on('data', function (data) {

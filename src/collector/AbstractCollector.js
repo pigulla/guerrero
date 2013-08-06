@@ -152,7 +152,7 @@ AbstractCollector.prototype.list;
  * @param {string} file The name of a file as reported by {@link #list}.
  * @param {Function} callback
  * @param {?Object} callback.err
- * @param {guerrero.types.FileInfo} callback.info
+ * @param {guerrero.types.MediaInfo} callback.mediainfo
  */
 AbstractCollector.prototype.loadMediaInfo;
 /*jshint +W030*/
@@ -279,7 +279,7 @@ AbstractCollector.prototype._extractMediaInfo = function (fileName, data) {
  * @returns {string|boolean} Returns the pattern string that matched or `false` if `patterns` had no entries or none of
  * them matched.
  */
-AbstractCollector.prototype._firstMatchingPattern = function (fileName, patterns) {
+AbstractCollector.prototype._getFirstMatchingPattern = function (fileName, patterns) {
     for (var i = 0; i < patterns.length; ++i) {
         if (patterns[i].match(fileName)) {
             return patterns[i].pattern;
@@ -300,8 +300,8 @@ AbstractCollector.prototype._firstMatchingPattern = function (fileName, patterns
  * @return {boolean}
  */
 AbstractCollector.prototype._accepted = function (fileName) {
-    var excludePattern = this._firstMatchingPattern(fileName, this._excludes),
-        includePattern = this._includes.length ? this._firstMatchingPattern(fileName, this._includes) : true;
+    var excludePattern = this._getFirstMatchingPattern(fileName, this._excludes),
+        includePattern = this._includes.length ? this._getFirstMatchingPattern(fileName, this._includes) : true;
 
     if (this._verboseFilters) {
         this._logFilterMessage(fileName, includePattern, excludePattern);

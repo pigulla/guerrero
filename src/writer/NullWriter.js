@@ -1,3 +1,5 @@
+var util = require('util');
+
 var AbstractWriter = require('./AbstractWriter');
 
 /**
@@ -10,9 +12,11 @@ var AbstractWriter = require('./AbstractWriter');
  */
 var NullWriter = function (options) {
     /*jshint -W106*/
-    AbstractWriter.super_.apply(this, arguments);
+    NullWriter.super_.apply(this, arguments);
     /*jshint +W106*/
 };
+
+util.inherits(NullWriter, AbstractWriter);
 
 
 /**
