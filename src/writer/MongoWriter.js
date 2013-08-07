@@ -11,7 +11,7 @@ var AsyncWriter = require('./AsyncWriter');
 /**
  * A writer that dumps the data into a MongoDB.
  *
- * See the [`node-mongodb-native`][1] documentation for more information.
+ * See the documentation for the used [`node-mongodb-native`][1] module for more information.
  *
  * @class guerrero.writer.MongoWriter
  * @extend guerrero.writer.AsyncWriter

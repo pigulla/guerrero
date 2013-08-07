@@ -11,7 +11,7 @@ var AsyncWriter = require('./AsyncWriter');
 /**
  * A writer that dumps the data into a MySQL database.
  *
- * See the [`mysql`][1] documentation for more information.
+ * See the documentation of the used [`mysql`][1] module for more information.
  *
  * @class guerrero.writer.MysqlWriter
  * @extend guerrero.writer.AsyncWriter
