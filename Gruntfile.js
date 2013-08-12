@@ -15,6 +15,17 @@ module.exports = function (grunt) {
             }
         },
 
+        eslint: {
+            src: {
+                files: {
+                    src: ['src/**/*.js']
+                },
+                options: {
+                    config: 'eslint.json'
+                }
+            }
+        },
+
         exec: {
             jsduck: {
                 cwd: 'docs',
@@ -26,6 +37,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-exec');
+    grunt.loadNpmTasks('eslint-grunt');
 
     grunt.registerTask('docs', ['clean:docs', 'exec:jsduck']);
     grunt.registerTask('lint', ['jshint'])
