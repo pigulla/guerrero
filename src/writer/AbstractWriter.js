@@ -1,6 +1,3 @@
-var _ = require('lodash');
-
-
 /**
  * The abstract base class for all writer implementations.
  *

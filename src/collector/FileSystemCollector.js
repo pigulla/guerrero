@@ -1,11 +1,7 @@
-var fs = require('fs'),
-    path = require('path'),
+var path = require('path'),
     util = require('util');
 
-var _ = require('lodash'),
-    async = require('async'),
-    filesize = require('filesize'),
-    Glob = require('glob').Glob,
+var Glob = require('glob').Glob,
     mediainfo = require('mediainfo'),
     winston = require('winston');
 

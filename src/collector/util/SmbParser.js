@@ -1,5 +1,4 @@
-var _ = require('lodash'),
-    XRegExp = require('xregexp').XRegExp;
+var XRegExp = require('xregexp').XRegExp;
 
 var regex = {
         lsFile: new XRegExp(

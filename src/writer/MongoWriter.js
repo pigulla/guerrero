@@ -1,8 +1,6 @@
-var fs = require('fs'),
-    util = require('util');
+var util = require('util');
 
 var _ = require('lodash'),
-    async = require('async'),
     MongoClient = require('mongodb').MongoClient,
     winston = require('winston');
 

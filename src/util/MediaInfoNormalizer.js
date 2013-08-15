@@ -146,8 +146,6 @@ MediaInfoNormalizer.prototype._parseFileSize = function (str) {
  * @throws Error If `str` could not be parsed and {@link #cfg-bail} is enabled.
  */
 MediaInfoNormalizer.prototype._parseSamplingRate = function (str) {
-    var that;
-
     var parts = str.split(' '),
         factor = {
             GHz: 10e9,

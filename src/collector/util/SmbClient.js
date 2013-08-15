@@ -2,9 +2,7 @@ var childprocess = require('child_process'),
     util = require('util');
 
 var _ = require('lodash'),
-    async = require('async'),
     filesize = require('filesize'),
-    S = require('string'),
     shellquote = require('shell-quote').quote,
     winston = require('winston');
 

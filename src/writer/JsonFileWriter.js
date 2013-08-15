@@ -1,8 +1,7 @@
 var fs = require('fs'),
     util = require('util');
 
-var _ = require('lodash'),
-    winston = require('winston');
+var _ = require('lodash');
 
 var AbstractWriter = require('./AbstractWriter');
 

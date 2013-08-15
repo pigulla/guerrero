@@ -1,11 +1,7 @@
-var fs = require('fs'),
-    path = require('path'),
-    util = require('util');
+var util = require('util');
 
 var _ = require('lodash'),
-    S = require('string'),
-    temp = require('temp'),
-    winston = require('winston');
+    S = require('string');
 
 var Client = require('./util/SmbClient'),
     Parser = require('./util/SmbParser'),

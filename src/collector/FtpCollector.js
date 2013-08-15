@@ -1,5 +1,4 @@
-var fs = require('fs'),
-    util = require('util');
+var util = require('util');
 
 var _ = require('lodash'),
     FtpClient = require('ftp'),
