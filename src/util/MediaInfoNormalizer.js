@@ -269,6 +269,7 @@ MediaInfoNormalizer.prototype._parseFloatUnit = function (str, unit) {
  * @return {Object}
  */
 MediaInfoNormalizer.prototype._normalizeTrack = function (track) {
+    //eslint: -complexity
     _.each(track, function (v, k) {
         /*jshint -W074*/
         if (/^_\d{2}_\d{2}_\d{5}$/.test(k)) {
@@ -386,6 +387,7 @@ MediaInfoNormalizer.prototype._normalizeTrack = function (track) {
  * @return {guerrero.types.MediaInfo}
  */
 MediaInfoNormalizer.prototype._normalizeInfo = function (info) {
+    //eslint: -complexity
     _.each(info, function (v, k) {
         /*jshint -W074*/
         switch (k) {

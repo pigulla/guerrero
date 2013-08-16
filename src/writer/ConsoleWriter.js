@@ -24,6 +24,7 @@ util.inherits(ConsoleWriter, AbstractWriter);
  * @inheritdoc
  */
 ConsoleWriter.prototype.info = function (info) {
+    //eslint: -no-console
     console.log(info.formattedName);
 };
 

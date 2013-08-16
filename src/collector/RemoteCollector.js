@@ -1,17 +1,16 @@
 var fs = require('fs'),
+    path = require('path'),
     util = require('util');
 
 var _ = require('lodash'),
     async = require('async'),
     filesize = require('filesize'),
     mediainfo = require('mediainfo'),
-    path = require('path'),
     temp = require('temp'),
     winston = require('winston');
 
 var AbstractCollector = require('./AbstractCollector'),
     RemoteDirectoryReader = require('./util/RemoteDirectoryReader');
-
 
 /**
  * This class is intended as a base class for collectors that access files on remote systems.

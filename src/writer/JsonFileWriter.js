@@ -23,12 +23,14 @@ var JsonFileWriter = function (options) {
     JsonFileWriter.super_.apply(this, arguments);
     /*jshint +W106*/
 
+    /*eslint: -no-octal*/
     _.defaults(options, {
         filename: null,
         flags: 'w',
         mode: 0666,
         encoding: 'utf8'
     });
+    /*eslint: +no-octal*/
 
     this._filename = options.filename;
     this._flags = options.flags;
