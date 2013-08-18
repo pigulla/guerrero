@@ -6,9 +6,15 @@ lib-cov
 *.out
 *.pid
 *.gz
+.idea
+
+atlassian-ide-plugin.xml
 
 pids
 logs
 results
+
+node_modules
+docs/output
 
 npm-debug.log
