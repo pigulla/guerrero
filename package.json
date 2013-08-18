@@ -1,6 +1,6 @@
 {
   "name": "guerrero",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "description": "Traverse both remote and local file systems and collect information about movies, images and music via mediainfo.",
   "private": false,
   "bugs": "https://github.com/pigulla/guerrero/issues",
