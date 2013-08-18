@@ -1,13 +1,12 @@
 var util = require('util');
 
-var _ = require('lodash'),
-    FtpClient = require('ftp'),
+var FtpClient = require('ftp'),
+    _ = require('lodash'),
     S = require('string'),
     winston = require('winston');
 
-var CurlFtp = require('./util/CurlFtp'),
-    RemoteCollector = require('./RemoteCollector');
-
+var RemoteCollector = require('./RemoteCollector'),
+    CurlFtp = require('./util/CurlFtp');
 
 /**
  * A collector that traverses a FTP remote system using a node FTP client (for traversal) and `curl` (for downloading).

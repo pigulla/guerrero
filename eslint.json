@@ -69,6 +69,7 @@
         "no-multi-str": 1,
         "consistent-this": [1, "self"],
         "unnecessary-strict": 1,
-        "no-mixed-requires": [1, true]
+        "no-mixed-requires": [1, true],
+        "sorted-requires": 1
     }
 }

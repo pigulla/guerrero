@@ -1,8 +1,8 @@
 var events = require('events'),
     util = require('util');
 
-var _ = require('lodash'),
-    async = require('async'),
+var async = require('async'),
+    _ = require('lodash'),
     Minimatch = require('minimatch').Minimatch,
     winston = require('winston');
 

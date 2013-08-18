@@ -3,9 +3,9 @@ var util = require('util');
 var _ = require('lodash'),
     S = require('string');
 
-var Client = require('./util/SmbClient'),
-    Parser = require('./util/SmbParser'),
-    RemoteCollector = require('./RemoteCollector.js');
+var RemoteCollector = require('./RemoteCollector.js'),
+    Client = require('./util/SmbClient'),
+    Parser = require('./util/SmbParser');
 
 
 /**

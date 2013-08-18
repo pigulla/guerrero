@@ -1,7 +1,7 @@
 var util = require('util');
 
-var _ = require('lodash'),
-    async = require('async'),
+var async = require('async'),
+    _ = require('lodash'),
     winston = require('winston');
 
 var AbstractWriter = require('./AbstractWriter');

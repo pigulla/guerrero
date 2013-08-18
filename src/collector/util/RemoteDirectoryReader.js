@@ -1,6 +1,6 @@
-var _ = require('lodash'),
-    async = require('async'),
+var async = require('async'),
     fkt = require('fkt'),
+    _ = require('lodash'),
     winston = require('winston');
 
 
