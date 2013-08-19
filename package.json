@@ -4,9 +4,11 @@
   "description": "Traverse both remote and local file systems and collect information about movies, images and music via mediainfo.",
   "private": false,
   "bugs": "https://github.com/pigulla/guerrero/issues",
+  "homepage": "http://guerrero.four66.com/docs/v0.0.2/",
   "engines": {
     "node": ">= 0.8.0"
   },
+  "on": ["linux", "darwin"],
   "dependencies": {
     "lodash": "~1.3.1",
     "mediainfo": "~0.0.2",

@@ -2,7 +2,7 @@
     "--title": "guerrero",
     "--output": "output",
     "--no-source": true,
-    "--footer": "guerrero",
+    "--footer": "guerrero v0.0.2",
     "--external": [
         "async.queue",
         "Buffer",
