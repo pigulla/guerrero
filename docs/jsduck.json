@@ -1,5 +1,6 @@
 {
     "--title": "guerrero",
+    "--verbose": true,
     "--output": "output",
     "--no-source": true,
     "--footer": "guerrero v0.0.2",
