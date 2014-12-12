@@ -5,7 +5,7 @@
  * @abstract
  */
 
-//<editor-fold desc="FileInfo">
+// <editor-fold desc="FileInfo">
 /**
  * An object that encapsulates information about a file.
  *
@@ -36,9 +36,9 @@
  * @member guerrero.types.FileInfo
  * @property {guerrero.types.MediaInfo} info The mediainfo object.
  */
-//</editor-fold>
+// </editor-fold>
 
-//<editor-fold desc="ProgressStatus">
+// <editor-fold desc="ProgressStatus">
 /**
  * The object used by `progress` events.
  *
@@ -54,12 +54,12 @@
  * @member guerrero.types.ProgressStatus
  * @property {number} total The total number of tasks.
  */
-//</editor-fold>
+// </editor-fold>
 
-//<editor-fold desc="MediaInfo">
+// <editor-fold desc="MediaInfo">
 /**
  * The object returned by `mediainfo`.
  *
  * @class guerrero.types.MediaInfo
  */
-//</editor-fold>
+// </editor-fold>

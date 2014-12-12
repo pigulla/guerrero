@@ -91,7 +91,6 @@
  * @return {boolean} Returns `true` if event had listeners, `false` otherwise.
  */
 
-
 /**
  * Return the number of listeners for a given event.
  *
@@ -101,7 +100,6 @@
  * @param {string} event
  * @return {number}
  */
-
 
 /**
  * This event is emitted any time someone adds a new listener.
@@ -118,4 +116,3 @@
  * @param {string} event The event name
  * @param {Function} listener The event handler function
  */
-

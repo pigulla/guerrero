@@ -11,7 +11,7 @@
  * @author Isaac Z. Schlueter <i@izs.me>
  */
 
-//<editor-fold desc="minimatch">
+// <editor-fold desc="minimatch">
 /**
  * Dump a ton of stuff to stderr.
  *
@@ -131,9 +131,9 @@
  * @param {string} pattern
  * @param {Object} options
  */
-//</editor-fold>
+// </editor-fold>
 
-//<editor-fold desc="minimatch.Minimatch">
+// <editor-fold desc="minimatch.Minimatch">
 /**
  * Create a minimatch object by instantiating the `minimatch.Minimatch` class.
  *
@@ -228,4 +228,4 @@
  * @param {Array.<RegExp>} patternArray
  * @param {boolean} partial
  */
-//</editor-fold>
+// </editor-fold>
