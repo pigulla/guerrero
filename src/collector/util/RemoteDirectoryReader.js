@@ -8,7 +8,7 @@ var async = require('async'),
  *
  * Users of this class must provide a `{@link #cfg-process}` method which will be invoked with the starting directory.
  * It must then query its underlying source and return all files and directories within that directory. The recursion
- * through the subdirectories is handled by the ` RemoteDirectoryReader`.
+ * through the subdirectories is handled by the `RemoteDirectoryReader`.
  *
  * @class guerrero.collector.util.RemoteDirectoryReader
  * @constructor
@@ -54,7 +54,7 @@ var RemoteDirectoryReader = function (options) {
 RemoteDirectoryReader.prototype._process;
 
 /**
- * The maximum number of workers to run concurrently
+ * The maximum number of workers to run concurrently.
  *
  * @private
  * @property {number} _concurrency
@@ -100,7 +100,7 @@ RemoteDirectoryReader.prototype._fileList;
 RemoteDirectoryReader.prototype._errors;
 
 /**
- * The async.queue used for recursive processing.
+ * The `async.queue` used for recursive processing.
  *
  * @private
  * @property {async.queue} _queue
@@ -112,7 +112,7 @@ RemoteDirectoryReader.prototype._queue;
  * Executes the reader on the specified directory.
  *
  * Invokes the callback with a list of files found. The caller should not make any assumptions about their order. While
- * the reader is running invoking this function again will result in an error.
+ * the reader is running, invoking this function again will result in an error.
  *
  * @param {string} directory
  * @param {Function} callback
@@ -164,7 +164,7 @@ RemoteDirectoryReader.prototype._notify = function () {
 };
 
 /**
- * Creates a worker for async.
+ * Creates a worker for `async`.
  *
  * @private
  * @param {string} directory The directory to process.

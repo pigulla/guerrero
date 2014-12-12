@@ -1,10 +1,10 @@
 var childprocess = require('child_process'),
     util = require('util');
 
-var filesize = require('filesize'),
-    _ = require('lodash'),
-    shellquote = require('shell-quote').quote,
+var _ = require('lodash'),
+    filesize = require('filesize'),
     S = require('string'),
+    shellquote = require('shell-quote').quote,
     winston = require('winston');
 
 /**

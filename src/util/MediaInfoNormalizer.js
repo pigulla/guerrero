@@ -50,7 +50,7 @@ MediaInfoNormalizer.prototype._warn = function () {
  *
  * @private
  * @param {string} str The input string.
- * @return {?boolean} Returns the parsed value of `null` if it could not be parsed.
+ * @return {?boolean} Returns the parsed value or `null` if it could not be parsed.
  * @throws Error If `str` could not be parsed and {@link #cfg-bail} is enabled.
  */
 MediaInfoNormalizer.prototype._parseBool = function (str) {
@@ -70,7 +70,7 @@ MediaInfoNormalizer.prototype._parseBool = function (str) {
  *
  * @private
  * @param {string} str The input string.
- * @return {?number} Returns the parsed value of `null` if it could not be parsed.
+ * @return {?number} Returns the parsed value or `null` if it could not be parsed.
  * @throws Error If `str` could not be parsed and {@link #cfg-bail} is enabled.
  */
 MediaInfoNormalizer.prototype._parseBitrate = function (str) {
@@ -103,7 +103,7 @@ MediaInfoNormalizer.prototype._parseBitrate = function (str) {
  *
  * @private
  * @param {string} str The input string.
- * @return {?number} Returns the parsed value of `null` if it could not be parsed.
+ * @return {?number} Returns the parsed value or `null` if it could not be parsed.
  * @throws Error If `str` could not be parsed and {@link #cfg-bail} is enabled.
  */
 MediaInfoNormalizer.prototype._parseFileSize = function (str) {
@@ -137,7 +137,7 @@ MediaInfoNormalizer.prototype._parseFileSize = function (str) {
  *
  * @private
  * @param {string} str The input string.
- * @return {?number} Returns the parsed value of `null` if it could not be parsed.
+ * @return {?number} Returns the parsed value or `null` if it could not be parsed.
  * @throws Error If `str` could not be parsed and {@link #cfg-bail} is enabled.
  */
 MediaInfoNormalizer.prototype._parseSamplingRate = function (str) {
@@ -172,7 +172,7 @@ MediaInfoNormalizer.prototype._parseSamplingRate = function (str) {
  *
  * @private
  * @param {string} str The input string.
- * @return {?boolean} Returns the parsed value of `null` if it could not be parsed.
+ * @return {?boolean} Returns the parsed value or `null` if it could not be parsed.
  * @throws Error If `str` could not be parsed and {@link #cfg-bail} is enabled.
  */
 MediaInfoNormalizer.prototype._parseDuration = function (str) {
@@ -215,7 +215,7 @@ MediaInfoNormalizer.prototype._parseDuration = function (str) {
  * @param {string} str The input string.
  * @param {string} unit The expected unit.
  * @param {string=} spaceSep An optional separator used within the number part of the string.
- * @return {?number} Returns the parsed value of `null` if it could not be parsed.
+ * @return {?number} Returns the parsed value or `null` if it could not be parsed.
  * @throws Error If `str` could not be parsed and {@link #cfg-bail} is enabled.
  */
 MediaInfoNormalizer.prototype._parseIntUnit = function (str, unit, spaceSep) {
@@ -240,7 +240,7 @@ MediaInfoNormalizer.prototype._parseIntUnit = function (str, unit, spaceSep) {
  * @private
  * @param {string} str The input string.
  * @param {string} unit The expected unit.
- * @return {?number} Returns the parsed value of `null` if it could not be parsed.
+ * @return {?number} Returns the parsed value or `null` if it could not be parsed.
  * @throws Error If `str` could not be parsed and {@link #cfg-bail} is enabled.
  */
 MediaInfoNormalizer.prototype._parseFloatUnit = function (str, unit) {
@@ -263,7 +263,6 @@ MediaInfoNormalizer.prototype._parseFloatUnit = function (str, unit) {
  * @return {Object}
  */
 MediaInfoNormalizer.prototype._normalizeTrack = function (track) {
-    // eslint: -complexity
     _.each(track, function (v, k) {
         if (/^_\d{2}_\d{2}_\d{5}$/.test(k)) {
             return;
@@ -379,7 +378,6 @@ MediaInfoNormalizer.prototype._normalizeTrack = function (track) {
  * @return {guerrero.types.MediaInfo}
  */
 MediaInfoNormalizer.prototype._normalizeInfo = function (info) {
-    // eslint: -complexity
     _.each(info, function (v, k) {
         switch (k) {
             case 'attachment':

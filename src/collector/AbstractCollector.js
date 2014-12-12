@@ -164,6 +164,7 @@ AbstractCollector.prototype.loadMediaInfo;
  */
 AbstractCollector.prototype._initMinimatch = function (value, options) {
     var array = _.isArray(value) ? value : [value];
+
     return array.map(function (str) {
         return new Minimatch(str, options);
     });
@@ -242,7 +243,7 @@ AbstractCollector.prototype.execute = function (directory, callback) {
 };
 
 /**
- * Normalizes the returned value returned by `mediainfo` or `null` if no info was found.
+ * Normalizes the value returned by `mediainfo` or `null` if no info was found.
  *
  * @private
  * @param {string} fileName

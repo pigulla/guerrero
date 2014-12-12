@@ -10,17 +10,14 @@ module.exports = function (grunt) {
         },
 
         jscs: {
+            options: {
+                config: '.jscsrc'
+            },
             source: {
-                src: ['<%= VAR.SOURCE %>'],
-                options: {
-                    config: '.jscsrc'
-                }
+                src: ['<%= VAR.SOURCE %>']
             },
             tests: {
-                src: ['<%= VAR.TESTS %>'],
-                options: {
-                    config: '.jscsrc'
-                }
+                src: ['<%= VAR.TESTS %>']
             }
         },
 
@@ -32,17 +29,14 @@ module.exports = function (grunt) {
         },
 
         eslint: {
+            options: {
+                config: '.eslintrc'
+            },
             source: {
-                src: ['<%= VAR.SOURCE %>'],
-                options: {
-                    config: '.eslintrc'
-                }
+                src: ['<%= VAR.SOURCE %>']
             },
             tests: {
-                src: ['<%= VAR.TESTS %>'],
-                options: {
-                    config: '.eslintrc'
-                }
+                src: ['<%= VAR.TESTS %>']
             }
         }
     });

@@ -3,7 +3,7 @@ var util = require('util');
 var AbstractWriter = require('./AbstractWriter');
 
 /**
- * A writer that dumps the name of the processed file on stdout.
+ * A writer that dumps the name of the processed file on `stdout`.
  *
  * @class guerrero.writer.ConsoleWriter
  * @extend guerrero.writer.AbstractWriter

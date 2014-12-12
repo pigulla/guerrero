@@ -1,7 +1,7 @@
 var util = require('util');
 
-var async = require('async'),
-    _ = require('lodash'),
+var _ = require('lodash'),
+    async = require('async'),
     winston = require('winston');
 
 var AbstractWriter = require('./AbstractWriter');
@@ -96,8 +96,8 @@ AsyncWriter.prototype.info = function (fileInfo) {
 };
 
 /**
- * If any additional steps need to be performed after all tasks have been processed (e.g., disconnecting from the
- * database) should implement this method. Subclasses should not overwrite {@link #finalize},
+ * Implement this method if any additional steps need to be performed after all tasks have been processed (e.g.,
+ * disconnecting from the database). Subclasses must *not* overwrite {@link #finalize},
  *
  * The difference to {@see #finalize} is that `finalize` is invoked when the last file was processed, at which point
  * there may still be items in the {@see #taskQueue}. `beforeFinalize`, on the other hand, is called when the last item

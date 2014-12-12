@@ -2,9 +2,9 @@ var fs = require('fs'),
     path = require('path'),
     util = require('util');
 
-var async = require('async'),
+var _ = require('lodash'),
+    async = require('async'),
     filesize = require('filesize'),
-    _ = require('lodash'),
     mediainfo = require('mediainfo'),
     temp = require('temp'),
     winston = require('winston');

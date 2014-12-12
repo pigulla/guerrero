@@ -1,18 +1,4 @@
-lib-cov
-*.seed
-*.log
-*.csv
-*.dat
-*.out
-*.pid
-*.gz
-.idea
-
-atlassian-ide-plugin.xml
-
-pids
-logs
-results
+.idea/
 
 node_modules
 docs/output
