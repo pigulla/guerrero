@@ -1,0 +1,13 @@
+  .                                   D        0  Fri Dec 12 15:02:26 2014
+  ..                                  D        0  Fri Dec 12 15:02:26 2014
+  bla                                 D        0  Fri Dec 12 15:02:25 2014
+  blub                               DA        0  Fri Dec 12 15:01:43 2014
+  Heretic - Saviour.xm                A  1497954  Tue Dec 11 08:50:45 2012
+  Keith303 - Amphetamine.xm           A   965654  Tue Dec 11 08:56:05 2012
+  KoM'AH - A Walk In The Park.mp3      A 11849769  Tue Dec 11 08:59:11 2012
+  KoM'AH - Fog.mp3                    A 11098697  Tue Dec 11 08:58:19 2012
+  KoM'AH - Mary Crystal (Give Me Wings).mp3    AHR 12804597  Tue Dec 11 08:58:01 2012
+  KoM'AH - Permian Organsim.mp3       A 15440248  Tue Dec 11 08:59:00 2012
+  KoM'AH - Resonator.mp3              A  9703758  Tue Dec 11 08:58:33 2012
+
+		52474 blocks of size 4194304. 913 blocks available
