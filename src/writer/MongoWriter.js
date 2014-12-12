@@ -26,9 +26,7 @@ var AsyncWriter = require('./AsyncWriter');
  * [2]: http://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html#mongoclient-connect-options
  */
 var MongoWriter = function (options) {
-    /*jshint -W106*/
     MongoWriter.super_.apply(this, arguments);
-    /*jshint +W106*/
 
     _.defaults(options, {
         host: 'localhost',
@@ -52,8 +50,7 @@ var MongoWriter = function (options) {
 
 util.inherits(MongoWriter, AsyncWriter);
 
-
-/*jshint -W030*/
+/* eslint-disable no-unused-expressions */
 /**
  * The MongoDB client object.
  *
@@ -85,18 +82,15 @@ MongoWriter.prototype._truncate;
  * @property {Object} _mongoOpts
  */
 MongoWriter.prototype._mongoOpts;
-/*jshint +W030*/
-
+/* eslint-enable no-unused-expressions */
 
 /**
  * @inheritdoc
  */
 MongoWriter.prototype.initialize = function (callback) {
-    /*jshint -W106*/
     MongoWriter.super_.prototype.initialize.apply(this, arguments);
-    /*jshint +W106*/
 
-    MongoClient.connect(this._url, this._mongoOpts, function(err, db) {
+    MongoClient.connect(this._url, this._mongoOpts, function (err, db) {
         if (err) {
             winston.error(err);
             callback(err);
@@ -119,7 +113,6 @@ MongoWriter.prototype.initialize = function (callback) {
     }.bind(this));
 };
 
-
 /**
  * @inheritdoc
  * @protected
@@ -128,7 +121,6 @@ MongoWriter.prototype.work = function (fileInfo, callback) {
     this._db.collection(this._mongo.database).insert(fileInfo, { safe: true }, callback);
 };
 
-
 /**
  * @inheritdoc
  * @protected
@@ -136,7 +128,6 @@ MongoWriter.prototype.work = function (fileInfo, callback) {
 MongoWriter.prototype.beforeFinalize = function (callback) {
     this._db.close(callback);
 };
-
 
 /**
  * @ignore

@@ -1,8 +1,8 @@
 var events = require('events'),
     util = require('util');
 
-var async = require('async'),
-    _ = require('lodash'),
+var _ = require('lodash'),
+    async = require('async'),
     Minimatch = require('minimatch').Minimatch,
     winston = require('winston');
 
@@ -68,7 +68,6 @@ var AbstractCollector = function (options) {
 
 util.inherits(AbstractCollector, events.EventEmitter);
 
-
 /**
  * Fired whenever the info about a file has been collected.
  *
@@ -84,9 +83,7 @@ util.inherits(AbstractCollector, events.EventEmitter);
  * @param {string} error
  */
 
-
-/*jshint -W030*/
-
+/* eslint-disable no-unused-expressions */
 /**
  * The maximum concurrency. See {@link #cfg-concurrency}.
  *
@@ -155,8 +152,7 @@ AbstractCollector.prototype.list;
  * @param {guerrero.types.MediaInfo} callback.mediainfo
  */
 AbstractCollector.prototype.loadMediaInfo;
-/*jshint +W030*/
-
+/* eslint-enable no-unused-expressions */
 
 /**
  * Converts a string or array of strings to an array of Minimatch objects.
@@ -172,7 +168,6 @@ AbstractCollector.prototype._initMinimatch = function (value, options) {
         return new Minimatch(str, options);
     });
 };
-
 
 /**
  * Formats a file (or directory) with the user-specified function. This is used to "fully qualify" remote file names.
@@ -191,7 +186,6 @@ AbstractCollector.prototype._initMinimatch = function (value, options) {
 AbstractCollector.prototype.formatFile = function (file) {
     return file;
 };
-
 
 /**
  * The entry point for collectors.
@@ -247,7 +241,6 @@ AbstractCollector.prototype.execute = function (directory, callback) {
     });
 };
 
-
 /**
  * Normalizes the returned value returned by `mediainfo` or `null` if no info was found.
  *
@@ -269,7 +262,6 @@ AbstractCollector.prototype._extractMediaInfo = function (fileName, data) {
     return this._miNormalizer.normalize(data[0]);
 };
 
-
 /**
  * Determines which minimatcher, if any, matched the given filename.
  *
@@ -288,7 +280,6 @@ AbstractCollector.prototype._getFirstMatchingPattern = function (fileName, patte
 
     return false;
 };
-
 
 /**
  * Checks if a filename is accepted by this instance's `{@link #_includes}` and `{@link #_excludes}` matchers.
@@ -309,7 +300,6 @@ AbstractCollector.prototype._accepted = function (fileName) {
 
     return includePattern && !excludePattern;
 };
-
 
 /**
  * Logs a debug message as to why a file passed the filters or not.
@@ -342,7 +332,6 @@ AbstractCollector.prototype._logFilterMessage = function (fileName, includedBy, 
 
     winston.info('File "%s" was %s %s %s', fileName, includeMsg, excludedBy ? 'but' : 'and', excludeMsg);
 };
-
 
 /**
  * @ignore

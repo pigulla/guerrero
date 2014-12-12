@@ -27,9 +27,7 @@ var AsyncWriter = require('./AsyncWriter');
  * [2]: https://github.com/felixge/node-mysql#connection-options
  */
 var MysqlWriter = function (options) {
-    /*jshint -W106*/
     MysqlWriter.super_.apply(this, arguments);
-    /*jshint +W106*/
 
     _.defaults(options, {
         mysql: {},
@@ -50,8 +48,7 @@ var MysqlWriter = function (options) {
 
 util.inherits(MysqlWriter, AsyncWriter);
 
-
-/*jshint -W030*/
+/* eslint-disable no-unused-expressions */
 /**
  * The MySQL client object.
  *
@@ -83,16 +80,13 @@ MysqlWriter.prototype._truncate;
  * @property {Object} _mysqlOpts
  */
 MysqlWriter.prototype._mysqlOpts;
-/*jshint +W030*/
-
+/* eslint-enable no-unused-expressions */
 
 /**
  * @inheritdoc
  */
 MysqlWriter.prototype.initialize = function (callback) {
-    /*jshint -W106*/
     MysqlWriter.super_.prototype.initialize.apply(this, arguments);
-    /*jshint +W106*/
 
     var truncateQuery = [
         'SET FOREIGN_KEY_CHECKS=0',
@@ -122,7 +116,6 @@ MysqlWriter.prototype.initialize = function (callback) {
     }.bind(this));
 };
 
-
 /**
  * @protected
  * @inheritdoc
@@ -140,7 +133,6 @@ MysqlWriter.prototype.fileInfoToTask = function (fileInfo) {
         stmt: stmt
     };
 };
-
 
 /**
  * @inheritdoc
@@ -164,7 +156,6 @@ MysqlWriter.prototype.work = function (task, callback) {
         callback(err);
     }.bind(this));
 };
-
 
 /**
  * Inserts the info data into the database.
@@ -195,7 +186,6 @@ MysqlWriter.prototype._insertInfoData = function (fileId, fileInfo) {
         });
     }.bind(this));
 };
-
 
 /**
  * Inserts the track data into the database.
@@ -233,7 +223,6 @@ MysqlWriter.prototype._insertTrackData = function (fileId, fileInfo) {
     }.bind(this));
 };
 
-
 /**
  * @inheritdoc
  * @protected
@@ -241,7 +230,6 @@ MysqlWriter.prototype._insertTrackData = function (fileId, fileInfo) {
 MysqlWriter.prototype.beforeFinalize = function (callback) {
     this._connection.end(callback);
 };
-
 
 /**
  * @ignore

@@ -7,7 +7,6 @@ var RemoteCollector = require('./RemoteCollector.js'),
     Client = require('./util/SmbClient'),
     Parser = require('./util/SmbParser');
 
-
 /**
  * A collector that traverses a Samba share using `smbclient` and `smbget`.
  *
@@ -17,9 +16,7 @@ var RemoteCollector = require('./RemoteCollector.js'),
  * @param {Object=} options
  */
 function SmbCollector(options) {
-    /*jshint -W106*/
     SmbCollector.super_.apply(this, arguments);
-    /*jshint +W106*/
 
     var opts = _.defaults(options || {}, {
         service: '',
@@ -39,8 +36,7 @@ function SmbCollector(options) {
 
 util.inherits(SmbCollector, RemoteCollector);
 
-
-/*jshint -W030*/
+/* eslint-disable no-unused-expressions */
 /**
  * The service name, e.g. `//myserver/tvseries`.
  *
@@ -64,8 +60,7 @@ SmbCollector.prototype._username;
  * @property {guerrero.collector.util.SmbClient} _client
  */
 SmbCollector.prototype._client;
-/*jshint +W030*/
-
+/* eslint-enable no-unused-expressions */
 
 /**
  * @protected
@@ -78,7 +73,6 @@ SmbCollector.prototype.formatFile = function (file) {
         this._username || 'guest', srv, file
     );
 };
-
 
 /**
  * @protected
@@ -114,7 +108,6 @@ SmbCollector.prototype.processDirectory = function (directory, callback) {
     });
 };
 
-
 /**
  * @protected
  * @inheritdoc
@@ -122,7 +115,6 @@ SmbCollector.prototype.processDirectory = function (directory, callback) {
 SmbCollector.prototype.downloadChunk = function (file, callback) {
     this._client.downloadFileChunk(file, this.chunkSize, callback);
 };
-
 
 /**
  * @ignore

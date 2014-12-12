@@ -21,9 +21,7 @@ var AbstractWriter = require('./AbstractWriter');
  * @cfg {number} [concurrency=3] The number of tasks allowed to run concurrently.
  */
 var AsyncWriter = function (options) {
-    /*jshint -W106*/
     AsyncWriter.super_.apply(this, arguments);
-    /*jshint +W106*/
 
     _.defaults(options, {
         concurrency: 3
@@ -34,8 +32,7 @@ var AsyncWriter = function (options) {
 
 util.inherits(AsyncWriter, AbstractWriter);
 
-
-/*jshint -W030*/
+/* eslint-disable no-unused-expressions */
 /**
  * The queue for the async tasks.
  *
@@ -65,8 +62,7 @@ AsyncWriter.prototype._concurrency;
  * @param {?Object} callback.err The error object.
  */
 AsyncWriter.prototype.work;
-/*jshint +W030*/
-
+/* eslint-enable no-unused-expressions */
 
 /**
  * @inheritdoc
@@ -76,7 +72,6 @@ AsyncWriter.prototype.work;
 AsyncWriter.prototype.initialize = function (callback) {
     this.taskQueue = async.queue(this.work.bind(this), this._concurrency);
 };
-
 
 /**
  * Converts a `fileInfo` object into its corresponding task object.
@@ -92,7 +87,6 @@ AsyncWriter.prototype.fileInfoToTask = function (fileInfo) {
     return fileInfo;
 };
 
-
 /**
  * @inheritdoc
  * @localdoc Runs {@link #fileInfoToTask} and pushes the returned task object onto the queue.
@@ -100,7 +94,6 @@ AsyncWriter.prototype.fileInfoToTask = function (fileInfo) {
 AsyncWriter.prototype.info = function (fileInfo) {
     this.taskQueue.push(this.fileInfoToTask(fileInfo));
 };
-
 
 /**
  * If any additional steps need to be performed after all tasks have been processed (e.g., disconnecting from the
@@ -121,23 +114,21 @@ AsyncWriter.prototype.beforeFinalize = function (callback) {
     callback();
 };
 
-
 /**
  * @inheritdoc
  * @localdoc Waits for the queue to drain and then invokes the callback. Subclasses must *not* overwrite this method but
  * implement {@see #beforeFinalize} instead.
  */
 AsyncWriter.prototype.finalize = function (callback) {
-    this.taskQueue.drain = (function () {
+    this.taskQueue.drain = function () {
         this.beforeFinalize(function (err) {
             if (err) {
                 winston.error(err.toString());
             }
             callback(err);
         });
-    }.bind(this));
+    }.bind(this);
 };
-
 
 /**
  * @ignore

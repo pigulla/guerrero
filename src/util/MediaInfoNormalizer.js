@@ -4,7 +4,6 @@ var _ = require('lodash'),
     time = require('time'),
     winston = require('winston');
 
-
 /**
  * A helper class for normalizing values in the object returned by `mediainfo`.
  *
@@ -21,8 +20,7 @@ var MediaInfoNormalizer = function (options) {
     this._bail = opts.bail;
 };
 
-
-/*jshint -W030*/
+/* eslint-disable no-unused-expressions */
 /**
  * See `{@link #cfg-bail}`.
  *
@@ -30,8 +28,7 @@ var MediaInfoNormalizer = function (options) {
  * @property {boolean} _bail
  */
 MediaInfoNormalizer.prototype._bail;
-/*jshint +W030*/
-
+/* eslint-enable no-unused-expressions */
 
 /**
  * Logs a warning message and causes an exception to be thrown if {@link #cfg-bail} is set.
@@ -47,7 +44,6 @@ MediaInfoNormalizer.prototype._warn = function () {
         throw new Error(msg);
     }
 };
-
 
 /**
  * Parses a string as a boolean. Supported values are `"Yes"` and `"No"`.
@@ -68,7 +64,6 @@ MediaInfoNormalizer.prototype._parseBool = function (str) {
         return null;
     }
 };
-
 
 /**
  * Parses a string as a bit rate.
@@ -94,6 +89,7 @@ MediaInfoNormalizer.prototype._parseBitrate = function (str) {
         this._warn('unparsable bitrate unit "%s"', unit);
         return null;
     }
+
     if (!/^\d+(\s\d{3})*(\.\d+)?$/.test(value)) {
         this._warn('unparsable bitrate value "%s"', value);
         return null;
@@ -101,7 +97,6 @@ MediaInfoNormalizer.prototype._parseBitrate = function (str) {
 
     return factor[unit] * parseFloat(value.replace(/ /g, ''));
 };
-
 
 /**
  * Parses a string as a file size.
@@ -128,6 +123,7 @@ MediaInfoNormalizer.prototype._parseFileSize = function (str) {
         this._warn('unparsable filesize string "%s"', str);
         return null;
     }
+
     if (!factor.hasOwnProperty(unit)) {
         this._warn('unparsable filesize unit "%s"', parts[1]);
         return null;
@@ -135,7 +131,6 @@ MediaInfoNormalizer.prototype._parseFileSize = function (str) {
 
     return Math.round(factor[parts[1]] * parseFloat(parts[0]));
 };
-
 
 /**
  * Parses a string as a sampling rate.
@@ -158,10 +153,12 @@ MediaInfoNormalizer.prototype._parseSamplingRate = function (str) {
         this._warn('unparsable sampling rate string "%s"', str);
         return null;
     }
+
     if (!factor.hasOwnProperty(parts[1])) {
         this._warn('unparsable sampling rate unit "%s"', parts[1]);
         return null;
     }
+
     if (!/^\d+(\.\d+)?$/.test(parts[0])) {
         this._warn('unparsable sampling rate value "%s"', parts[0]);
         return null;
@@ -169,7 +166,6 @@ MediaInfoNormalizer.prototype._parseSamplingRate = function (str) {
 
     return factor[parts[1]] * parseFloat(parts[0]);
 };
-
 
 /**
  * Parses a string as a duration.
@@ -200,6 +196,7 @@ MediaInfoNormalizer.prototype._parseDuration = function (str) {
             this._warn('unparsable time unit "%s"', matches[2]);
             return null;
         }
+
         if (!/^\d+$/.test(matches[1])) {
             this._warn('unparsable time value "%s"', matches[1]);
             return null;
@@ -210,7 +207,6 @@ MediaInfoNormalizer.prototype._parseDuration = function (str) {
 
     return result;
 };
-
 
 /**
  * Parses a string as an integer with a unit.
@@ -238,7 +234,6 @@ MediaInfoNormalizer.prototype._parseIntUnit = function (str, unit, spaceSep) {
     return parseInt(matches[1], 10);
 };
 
-
 /**
  * Parses a string as a float with a unit.
  *
@@ -260,7 +255,6 @@ MediaInfoNormalizer.prototype._parseFloatUnit = function (str, unit) {
     return parseFloat(matches[1]);
 };
 
-
 /**
  * Normalizes values of a track in-place.
  *
@@ -269,115 +263,113 @@ MediaInfoNormalizer.prototype._parseFloatUnit = function (str, unit) {
  * @return {Object}
  */
 MediaInfoNormalizer.prototype._normalizeTrack = function (track) {
-    //eslint: -complexity
+    // eslint: -complexity
     _.each(track, function (v, k) {
-        /*jshint -W074*/
         if (/^_\d{2}_\d{2}_\d{5}$/.test(k)) {
             return;
         }
 
         switch (k) {
-        case 'format_settings__floor':
-        case 'id':
-        case 'streamid':
-            track[k] = parseInt(track[k], 10);
-            break;
+            case 'format_settings__floor':
+            case 'id':
+            case 'streamid':
+                track[k] = parseInt(track[k], 10);
+                break;
 
-        case 'bits__pixel_frame_':
-            track[k] = parseFloat(track[k]);
-            break;
+            case 'bits__pixel_frame_':
+                track[k] = parseFloat(track[k]);
+                break;
 
-        case 'default':
-        case 'forced':
-        case 'format_settings__bvop':
-        case 'format_settings__qpel':
-        case 'format_settings__cabac':
-            track[k] = this._parseBool(v);
-            break;
+            case 'default':
+            case 'forced':
+            case 'format_settings__bvop':
+            case 'format_settings__qpel':
+            case 'format_settings__cabac':
+                track[k] = this._parseBool(v);
+                break;
 
-        case 'duration':
-        case 'delay_relative_to_video':
-            track[k] = this._parseDuration(v);
-            break;
+            case 'duration':
+            case 'delay_relative_to_video':
+                track[k] = this._parseDuration(v);
+                break;
 
-        case 'width':
-        case 'height':
-        case 'original_width':
-        case 'original_height':
-            track[k] = this._parseIntUnit(v, 'pixels', true);
-            break;
+            case 'width':
+            case 'height':
+            case 'original_width':
+            case 'original_height':
+                track[k] = this._parseIntUnit(v, 'pixels', true);
+                break;
 
-        case 'original_frame_rate':
-        case 'frame_rate':
-            track[k] = this._parseFloatUnit(v, 'fps');
-            break;
+            case 'original_frame_rate':
+            case 'frame_rate':
+                track[k] = this._parseFloatUnit(v, 'fps');
+                break;
 
-        case 'format_settings__reframes':
-            track[k] = this._parseIntUnit(v, 'frames');
-            break;
+            case 'format_settings__reframes':
+                track[k] = this._parseIntUnit(v, 'frames');
+                break;
 
-        case 'channel_s_':
-            track[k] = this._parseIntUnit(v, 'channels?');
-            break;
+            case 'channel_s_':
+                track[k] = this._parseIntUnit(v, 'channels?');
+                break;
 
-        case 'bit_depth':
-            track[k] = this._parseIntUnit(v, 'bits');
-            break;
+            case 'bit_depth':
+                track[k] = this._parseIntUnit(v, 'bits');
+                break;
 
-        case 'bit_rate':
-        case 'maximum_bit_rate':
-        case 'minimum_bit_rate':
-        case 'nominal_bit_rate':
-            track[k] = this._parseBitrate(v);
-            break;
+            case 'bit_rate':
+            case 'maximum_bit_rate':
+            case 'minimum_bit_rate':
+            case 'nominal_bit_rate':
+                track[k] = this._parseBitrate(v);
+                break;
 
-        case 'sampling_rate':
-            track[k] = this._parseSamplingRate(v);
-            break;
+            case 'sampling_rate':
+                track[k] = this._parseSamplingRate(v);
+                break;
 
-        case 'stream_size':
-            track[k] = this._parseFileSize(v);
-            break;
+            case 'stream_size':
+                track[k] = this._parseFileSize(v);
+                break;
 
-        case 'bit_rate_mode':
-        case 'channel_positions':
-        case 'chroma_subsampling':
-        case 'codec_id':
-        case 'codec_id_info':
-        case 'color_primaries':
-        case 'color_space':
-        case 'compression_mode':
-        case 'display_aspect_ratio':
-        case 'encoded_application_url':
-        case 'encoding_settings':
-        case 'format':
-        case 'format_info':
-        case 'format_profile':
-        case 'format_settings__endianness':
-        case 'frame_rate_mode':
-        case 'language':
-        case 'matrix_coefficients':
-        case 'mode':
-        case 'mode_extension':
-        case 'muxing_mode':
-        case 'original_display_aspect_ratio':
-        case 'scan_type':
-        case 'standard':
-        case 'title':
-        case 'transfer_characteristics':
-        case 'type':
-        case 'writing_application':
-        case 'writing_library':
-            break;
+            case 'bit_rate_mode':
+            case 'channel_positions':
+            case 'chroma_subsampling':
+            case 'codec_id':
+            case 'codec_id_info':
+            case 'color_primaries':
+            case 'color_space':
+            case 'compression_mode':
+            case 'display_aspect_ratio':
+            case 'encoded_application_url':
+            case 'encoding_settings':
+            case 'format':
+            case 'format_info':
+            case 'format_profile':
+            case 'format_settings__endianness':
+            case 'frame_rate_mode':
+            case 'language':
+            case 'matrix_coefficients':
+            case 'mode':
+            case 'mode_extension':
+            case 'muxing_mode':
+            case 'original_display_aspect_ratio':
+            case 'scan_type':
+            case 'standard':
+            case 'title':
+            case 'transfer_characteristics':
+            case 'type':
+            case 'writing_application':
+            case 'writing_library':
+                break;
 
-        default:
-            winston.warn('unhandled track property: "%s" with value "%s"', k, v);
+            default:
+                winston.warn('unhandled track property: "%s" with value "%s"', k, v);
         }
     }, this);
 
     return track;
 };
-
 
 /**
  * Normalizes info in-place.
@@ -387,50 +379,48 @@ MediaInfoNormalizer.prototype._normalizeTrack = function (track) {
  * @return {guerrero.types.MediaInfo}
  */
 MediaInfoNormalizer.prototype._normalizeInfo = function (info) {
-    //eslint: -complexity
+    // eslint: -complexity
     _.each(info, function (v, k) {
-        /*jshint -W074*/
         switch (k) {
-        case 'attachment':
-            info[k] = this._parseBool(v);
-            break;
+            case 'attachment':
+                info[k] = this._parseBool(v);
+                break;
 
-        case 'duration':
-            info[k] = this._parseDuration(v);
-            break;
+            case 'duration':
+                info[k] = this._parseDuration(v);
+                break;
 
-        case 'file_size':
-            info[k] = this._parseFileSize(v);
-            break;
+            case 'file_size':
+                info[k] = this._parseFileSize(v);
+                break;
 
-        case 'overall_bit_rate':
-            info[k] = this._parseIntUnit(v, 'bps', '\\s');
-            break;
+            case 'overall_bit_rate':
+                info[k] = this._parseIntUnit(v, 'bps', '\\s');
+                break;
 
-        case 'encoded_date':
-            var timezone = v.split(' ', 1)[0];
-            info[k] = +new time.Date(v.substring(timezone.length + 1), timezone);
-            break;
+            case 'encoded_date':
+                var timezone = v.split(' ', 1)[0];
+                info[k] = +new time.Date(v.substring(timezone.length + 1), timezone);
+                break;
 
-        case 'complete_name':
-        case 'format':
-        case 'format_version':
-        case 'movie_name':
-        case 'overall_bit_rate_mode':
-        case 'tracks':
-        case 'unique_id':
-        case 'writing_application':
-        case 'writing_library':
-            break;
+            case 'complete_name':
+            case 'format':
+            case 'format_version':
+            case 'movie_name':
+            case 'overall_bit_rate_mode':
+            case 'tracks':
+            case 'unique_id':
+            case 'writing_application':
+            case 'writing_library':
+                break;
 
-        default:
-            winston.warn('unhandled track property: "%s" with value "%s"', k, v);
+            default:
+                winston.warn('unhandled track property: "%s" with value "%s"', k, v);
         }
     }, this);
 
     return info;
 };
-
 
 /**
  * Normalizes the mediainfo object in-place.
@@ -447,7 +437,6 @@ MediaInfoNormalizer.prototype.normalize = function (mediaInfo) {
 
     return mediaInfo;
 };
-
 
 /**
  * @ignore

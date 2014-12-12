@@ -6,7 +6,6 @@ var filesize = require('filesize'),
     shellquote = require('shell-quote').quote,
     winston = require('winston');
 
-
 /**
  * A lightweight wrapper around the `smbclient` command line utility.
  *
@@ -29,7 +28,6 @@ function SmbClient(options) {
     this._password = options.password;
 }
 
-
 /**
  * Escapes a string for use as a smb remote command argument.
  *
@@ -38,10 +36,8 @@ function SmbClient(options) {
  * @return {string}
  */
 SmbClient.prototype._escape = function (str) {
-    /*jshint -W044*/
     return (str + '').replace(/([\\"'])/g, '\$1');
 };
-
 
 /**
  * Downloads part of a file.
@@ -59,6 +55,7 @@ SmbClient.prototype.downloadFileChunk = function (file, size, callback) {
     // prepend username/password or guest options
     if (this._username) {
         args.push('--username=' + this._username);
+
         if (this._password) {
             args.push('--password=' + this._password);
         }
@@ -94,7 +91,6 @@ SmbClient.prototype.downloadFileChunk = function (file, size, callback) {
     });
 };
 
-
 /**
  * Generates the command line string to execute `smbclient` with.
  *
@@ -111,13 +107,13 @@ SmbClient.prototype._getCliArgs = function (directory, command, hidePassword) {
     if (this._username) {
         args.push('--user=' + this._username);
     }
+
     if (this._password) {
         args.splice(1, 0, hidePassword ? this._password.replace(/./g, 'X') : this._password);
     }
 
     return args;
 };
-
 
 /**
  * Executes a SMB command on the remote host and returns the output.
@@ -158,7 +154,6 @@ SmbClient.prototype._executeRemoteCommand = function (directory, command, callba
     });
 };
 
-
 /**
  * Executes the `ls` command on the remote host.
  *
@@ -170,7 +165,6 @@ SmbClient.prototype._executeRemoteCommand = function (directory, command, callba
 SmbClient.prototype.ls = function (directory, callback) {
     this._executeRemoteCommand(directory, 'ls', callback);
 };
-
 
 /**
  * Executes the `du` command for a specific file on the remote host.
@@ -184,7 +178,6 @@ SmbClient.prototype.du = function (file, callback) {
     var command = 'du "' + this._escape(file) + '"';
     this._executeRemoteCommand('/', command, callback);
 };
-
 
 /**
  * @ignore

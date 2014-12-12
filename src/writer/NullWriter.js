@@ -11,20 +11,16 @@ var AbstractWriter = require('./AbstractWriter');
  * @param {Object} options
  */
 var NullWriter = function (options) {
-    /*jshint -W106*/
     NullWriter.super_.apply(this, arguments);
-    /*jshint +W106*/
 };
 
 util.inherits(NullWriter, AbstractWriter);
-
 
 /**
  * @inheritdoc
  */
 NullWriter.prototype.info = function (fileInfo) {
 };
-
 
 /**
  * @ignore

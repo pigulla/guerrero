@@ -3,7 +3,6 @@ var async = require('async'),
     _ = require('lodash'),
     winston = require('winston');
 
-
 /**
  * This is a helper class for traversing remote directories.
  *
@@ -45,8 +44,7 @@ var RemoteDirectoryReader = function (options) {
     this._concurrency = options.concurrency;
 };
 
-
-/*jshint -W030*/
+/* eslint-disable no-unused-expressions */
 /**
  * The progress callback that is invoked whenever a directory was processed.
  *
@@ -108,8 +106,7 @@ RemoteDirectoryReader.prototype._errors;
  * @property {async.queue} _queue
  */
 RemoteDirectoryReader.prototype._queue;
-/*jshint +W030*/
-
+/* eslint-enable no-unused-expressions */
 
 /**
  * Executes the reader on the specified directory.
@@ -138,9 +135,10 @@ RemoteDirectoryReader.prototype.run = function (directory, callback) {
     this._errors = [];
     this._queue = async.queue(this._createWorker.bind(this), this._concurrency);
 
-    this._queue.drain = (function () {
+    this._queue.drain = function () {
         this._notify();
         this._running = false;
+
         if (!this._errors.length) {
             callback(null, this._fileList);
         } else {
@@ -148,11 +146,10 @@ RemoteDirectoryReader.prototype.run = function (directory, callback) {
             error._errors = this._errors;
             callback(error, null);
         }
-    }.bind(this));
+    }.bind(this);
 
     this._enqueue(directory);
 };
-
 
 /**
  * Calls the notify callback with the current progress status.
@@ -165,7 +162,6 @@ RemoteDirectoryReader.prototype._notify = function () {
         total: this._tasksDone + this._queue.length()
     });
 };
-
 
 /**
  * Creates a worker for async.
@@ -197,7 +193,6 @@ RemoteDirectoryReader.prototype._createWorker = function (directory, callback) {
     }.bind(this));
 };
 
-
 /**
  * Passes the given directory to the "process" callback specified in the options. Once that callback returns, the reader
  * automatically recurses into the found subdirectories.
@@ -225,7 +220,6 @@ RemoteDirectoryReader.prototype._processDirectory = function (directory, callbac
     }.bind(this));
 };
 
-
 /**
  * Adds the given directory to the processing queue and notifies the progress callbacks.
  *
@@ -236,7 +230,6 @@ RemoteDirectoryReader.prototype._enqueue = function (directory) {
     this._queue.push(directory);
     this._notify();
 };
-
 
 /**
  * @ignore

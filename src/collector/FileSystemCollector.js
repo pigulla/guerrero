@@ -7,7 +7,6 @@ var Glob = require('glob').Glob,
 
 var AbstractCollector = require('./AbstractCollector.js');
 
-
 /**
  * A collector that traverses the (local) file system.
  *
@@ -17,13 +16,10 @@ var AbstractCollector = require('./AbstractCollector.js');
  * @param {Object=} options
  */
 var FileSystemCollector = function (options) {
-    /*jshint -W106*/
     FileSystemCollector.super_.apply(this, arguments);
-    /*jshint +W106*/
 };
 
 util.inherits(FileSystemCollector, AbstractCollector);
-
 
 /**
  * @protected
@@ -58,7 +54,6 @@ FileSystemCollector.prototype.list = function (directory, callback) {
     });
 };
 
-
 /**
  * @protected
  * @inheritdoc
@@ -66,7 +61,6 @@ FileSystemCollector.prototype.list = function (directory, callback) {
 FileSystemCollector.prototype.loadMediaInfo = function (file, callback) {
     mediainfo(file, callback);
 };
-
 
 /**
  * @ignore

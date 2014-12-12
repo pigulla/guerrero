@@ -2,7 +2,6 @@ var util = require('util');
 
 var AbstractWriter = require('./AbstractWriter');
 
-
 /**
  * A writer that dumps the name of the processed file on stdout.
  *
@@ -12,22 +11,18 @@ var AbstractWriter = require('./AbstractWriter');
  * @param {Object} options
  */
 var ConsoleWriter = function (options) {
-    /*jshint -W106*/
     ConsoleWriter.super_.apply(this, arguments);
-    /*jshint +W106*/
 };
 
 util.inherits(ConsoleWriter, AbstractWriter);
-
 
 /**
  * @inheritdoc
  */
 ConsoleWriter.prototype.info = function (info) {
-    //eslint: -no-console
+    // eslint: -no-console
     console.log(info.formattedName);
 };
-
 
 /**
  * @ignore

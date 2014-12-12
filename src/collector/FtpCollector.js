@@ -21,9 +21,7 @@ var RemoteCollector = require('./RemoteCollector'),
  * @cfg {?string} [password=null] The password.
  */
 function FtpCollector(options) {
-    /*jshint -W106*/
     FtpCollector.super_.apply(this, arguments);
-    /*jshint +W106*/
 
     var opts = _.defaults(options || {}, {
         host: 'localhost',
@@ -39,8 +37,7 @@ function FtpCollector(options) {
 
 util.inherits(FtpCollector, RemoteCollector);
 
-
-/*jshint -W030*/
+/* eslint-disable no-unused-expressions */
 /**
  * The FTP client.
  *
@@ -68,8 +65,7 @@ FtpCollector.prototype._curl;
  * @property {string} _remote.password
  */
 FtpCollector.prototype._remote;
-/*jshint +W030*/
-
+/* eslint-enable no-unused-expressions */
 
 /**
  * @protected
@@ -78,7 +74,6 @@ FtpCollector.prototype._remote;
 FtpCollector.prototype.formatFile = function (file) {
     return 'ftp://' + this._remote.user + '@' + this._remote.host + file;
 };
-
 
 /**
  * @protected
@@ -92,14 +87,12 @@ FtpCollector.prototype.list = function (directory, callback) {
 
     this._client.connect(this._remote);
     this._client.on('ready', function () {
-        /*jshint -W106*/
         FtpCollector.super_.prototype.list.call(self, dir, function (err, files) {
             self._client.end();
             callback(err, files);
         });
     });
 };
-
 
 /**
  * @protected
@@ -108,7 +101,6 @@ FtpCollector.prototype.list = function (directory, callback) {
 FtpCollector.prototype.downloadChunk = function (file, callback) {
     this._curl.downloadFileChunk(file, this.chunkSize, callback);
 };
-
 
 /**
  * @protected
@@ -144,7 +136,6 @@ FtpCollector.prototype.processDirectory = function (directory, callback) {
         }
     });
 };
-
 
 /**
  * @ignore

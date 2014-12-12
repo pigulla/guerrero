@@ -7,7 +7,6 @@ var filesize = require('filesize'),
     S = require('string'),
     winston = require('winston');
 
-
 /**
  * A lightweight wrapper around the `curl` command line utility for FTP connections.
  *
@@ -32,7 +31,6 @@ function CurlFtp(options) {
     });
 }
 
-
 /**
  * Generates the command line string to execute `curl`.
  *
@@ -52,7 +50,6 @@ CurlFtp.prototype._getCliCommand = function (url, size, hidePassword) {
 
     return util.format('curl %s %s', args.join(' '), shellquote([url]));
 };
-
 
 /**
  * Downloads part of a file.
@@ -91,7 +88,6 @@ CurlFtp.prototype.downloadFileChunk = function (file, size, callback) {
         }
     });
 };
-
 
 /**
  * @ignore

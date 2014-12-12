@@ -32,9 +32,7 @@ var AbstractCollector = require('./AbstractCollector'),
  *                                 but should not download less.
  */
 var RemoteCollector = function (options) {
-    /*jshint -W106*/
     RemoteCollector.super_.apply(this, arguments);
-    /*jshint +W106*/
 
     var opts = _.defaults(options || {}, {
         chunkSize: 10 * 1000
@@ -45,8 +43,7 @@ var RemoteCollector = function (options) {
 
 util.inherits(RemoteCollector, AbstractCollector);
 
-
-/*jshint -W030*/
+/* eslint-disable no-unused-expressions */
 /**
  * The desired chunkSize. See {@link #cfg-chunkSize}
  *
@@ -55,7 +52,6 @@ util.inherits(RemoteCollector, AbstractCollector);
  * @property {number} chunkSize
  */
 RemoteCollector.prototype.chunkSize;
-
 
 /**
  * The "per-directory version" of `{@link #list}` used to recursively traverse the remote file system (or equivalent
@@ -71,7 +67,6 @@ RemoteCollector.prototype.chunkSize;
  */
 RemoteCollector.prototype.processDirectory;
 
-
 /**
  * Downloads a chunk the specified file (see {@link #cfg-chunkSize}).
  *
@@ -84,8 +79,7 @@ RemoteCollector.prototype.processDirectory;
  * @param {Buffer} callback.buffer
  */
 RemoteCollector.prototype.downloadChunk;
-/*jshint +W030*/
-
+/* eslint-enable no-unused-expressions */
 
 /**
  * @protected
@@ -97,7 +91,6 @@ RemoteCollector.prototype.list = function (directory, callback) {
         format: this.formatFile.bind(this)
     }).run(directory, callback);
 };
-
 
 /**
  * @protected
@@ -120,7 +113,6 @@ RemoteCollector.prototype.loadMediaInfo = function (file, callback) {
         callback(err, info);
     });
 };
-
 
 /**
  * Downloads a chunk of the given file and saves it to a local temporary file.
@@ -180,7 +172,6 @@ RemoteCollector.prototype._downloadChunkToTemporaryFile = function (file, callba
         }
     });
 };
-
 
 /**
  * @ignore

@@ -1,27 +1,25 @@
-'use strict';
-
 module.exports = function (grunt) {
     grunt.initConfig({
+        VAR: {
+            SOURCE: 'src/**/*.js',
+            TESTS: 'test/**/*.js'
+        },
+
         clean: {
             'docs': ['docs/output']
         },
 
-        jshint: {
+        jscs: {
             source: {
-                src: ['src/**/*.js'],
+                src: ['<%= VAR.SOURCE %>'],
                 options: {
-                    jshintrc: 'src/.jshintrc'
+                    config: '.jscsrc'
                 }
-            }
-        },
-
-        eslint: {
-            src: {
-                files: {
-                    src: ['src/**/*.js']
-                },
+            },
+            tests: {
+                src: ['<%= VAR.TESTS %>'],
                 options: {
-                    config: 'eslint.json'
+                    config: '.jscsrc'
                 }
             }
         },
@@ -31,14 +29,29 @@ module.exports = function (grunt) {
                 cwd: 'docs',
                 command: 'jsduck'
             }
+        },
+
+        eslint: {
+            source: {
+                src: ['<%= VAR.SOURCE %>'],
+                options: {
+                    config: '.eslintrc'
+                }
+            },
+            tests: {
+                src: ['<%= VAR.TESTS %>'],
+                options: {
+                    config: '.eslintrc'
+                }
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-exec');
-    grunt.loadNpmTasks('eslint-grunt');
+    grunt.loadNpmTasks('grunt-eslint');
+    grunt.loadNpmTasks('grunt-jscs');
 
     grunt.registerTask('docs', ['clean:docs', 'exec:jsduck']);
-    grunt.registerTask('lint', ['jshint'])
+    grunt.registerTask('lint', ['eslint', 'jscs']);
 };

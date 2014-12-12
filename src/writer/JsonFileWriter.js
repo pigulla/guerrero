@@ -5,7 +5,6 @@ var _ = require('lodash');
 
 var AbstractWriter = require('./AbstractWriter');
 
-
 /**
  * A writer that dumps the data into a JSON file.
  *
@@ -19,18 +18,16 @@ var AbstractWriter = require('./AbstractWriter');
  * @cfg {string} [encoding="utf8"] The character encoding for the output.
  */
 var JsonFileWriter = function (options) {
-    /*jshint -W106*/
     JsonFileWriter.super_.apply(this, arguments);
-    /*jshint +W106*/
 
-    /*eslint: -no-octal*/
+    /* eslint-disable no-octal */
     _.defaults(options, {
         filename: null,
         flags: 'w',
         mode: 0666,
         encoding: 'utf8'
     });
-    /*eslint: +no-octal*/
+    /* eslint-enable no-octal */
 
     this._filename = options.filename;
     this._flags = options.flags;
@@ -40,8 +37,7 @@ var JsonFileWriter = function (options) {
 
 util.inherits(JsonFileWriter, AbstractWriter);
 
-
-/*jshint -W030*/
+/* eslint-disable no-unused-expressions */
 /**
  * The buffer for the most recent FileInfo object.
  *
@@ -77,8 +73,7 @@ JsonFileWriter.prototype._mode;
  * @property {string} _encoding
  */
 JsonFileWriter.prototype._encoding;
-/*jshint +W030*/
-
+/* eslint-enable no-unused-expressions */
 
 /**
  * @inheritdoc
@@ -97,7 +92,6 @@ JsonFileWriter.prototype.initialize = function (callback) {
     }.bind(this));
 };
 
-
 /**
  * @inheritdoc
  */
@@ -108,7 +102,6 @@ JsonFileWriter.prototype.info = function (info) {
 
     this._last = info;
 };
-
 
 /**
  * @inheritdoc
@@ -121,7 +114,6 @@ JsonFileWriter.prototype.finalize = function (callback) {
 
     this._fstream.end(']', this._encoding, callback);
 };
-
 
 /**
  * @ignore

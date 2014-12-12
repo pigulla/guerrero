@@ -12,8 +12,7 @@ var AbstractWriter = function (options) {
     this._collector.on('info', this.info.bind(this));
 };
 
-
-/*jshint -W030*/
+/* eslint-disable no-unused-expressions */
 /**
  * The collector for this writer.
  *
@@ -22,8 +21,6 @@ var AbstractWriter = function (options) {
  * @property {guerrero.collector.AbstractCollector} collector
  */
 AbstractWriter.prototype._collector;
-/*jshint -W030*/
-
 
 /**
  * Initialize the writer (e.g., connect to the database, open the output file, etc).
@@ -36,7 +33,6 @@ AbstractWriter.prototype.initialize = function (callback) {
     callback();
 };
 
-
 /**
  * Finalize the writer (e.g., disconnect from the database, close the output file, etc).
  *
@@ -47,9 +43,8 @@ AbstractWriter.prototype.initialize = function (callback) {
 AbstractWriter.prototype.finalize = function (callback) {
     callback();
 };
+/* eslint-enable no-unused-expressions */
 
-
-/*jshint -W030*/
 /**
  * Signals the writer that a file has been processed.
  *
@@ -57,9 +52,7 @@ AbstractWriter.prototype.finalize = function (callback) {
  * @method info
  * @param {guerrero.types.FileInfo} fileInfo The info object.
  */
-AbstractWriter.prototype.info;
-/*jshint +W030*/
-
+AbstractWriter.prototype.info = null;
 
 /**
  * @ignore

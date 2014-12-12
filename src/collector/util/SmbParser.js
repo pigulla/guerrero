@@ -40,7 +40,6 @@ SmbParser.du = function (output) {
 
     // TODO: we don't really need to split by lines first, we can just use one regexp
     output.split('\n').forEach(function (line) {
-        /*jshint -W084*/
         var matches;
 
         if (matches = XRegExp.exec(line, regex.duTotal)) {
@@ -54,7 +53,6 @@ SmbParser.du = function (output) {
 
     return result;
 };
-
 
 /**
  * Parses the output of an SMB `ls` command.
@@ -70,7 +68,6 @@ SmbParser.ls = function (output) {
         };
 
     output.split('\n').forEach(function (line) {
-        /*jshint -W084*/
         var matches;
 
         if (matches = XRegExp.exec(line, regex.lsDir)) {
@@ -89,7 +86,6 @@ SmbParser.ls = function (output) {
 
     return result;
 };
-
 
 /**
  * @ignore
