@@ -1,6 +1,7 @@
 .idea/
 
-node_modules
-docs/output
+node_modules/
+docs/output/
+reports/
 
 npm-debug.log

@@ -1,6 +1,6 @@
-var async = require('async'),
+var _ = require('lodash'),
+    async = require('async'),
     fkt = require('fkt'),
-    _ = require('lodash'),
     winston = require('winston');
 
 /**
@@ -15,18 +15,20 @@ var async = require('async'),
  * @param {Object} options
  * @cfg {number} concurrency The maximum number of concurrent operations on the remote host.
  * @cfg {Function} format
- * A function that formats raw file names in something more suitable for logs, e.g. by prefixing the actual file name
- * with the name of the remote host.
- * @cfg {string} format.file The original file name.
+ * A function that formats raw file (or directory) names in something more suitable for logs, e.g. by prefixing the
+ * actual file name with the name of the remote host.
+ * @cfg {string} format.file The original file or directory name.
  * @cfg {Function} progress A progress callback that is invoked whenever a directory was processed.
  * @cfg {guerrero.types.ProgressStatus} progress.status The current status of the traversal.
  * @cfg {Function} process The callback that is invoked recursively with each found directory.
  * @cfg {string} process.directory The directory to process.
  * @cfg {Function} process.callback The callback that must be invoked when the passed directory is processed completely.
  * @cfg {?Object} process.callback.err The error object.
- * @cfg {Object} process.callback.result x The result file list.
- * @cfg {Array.<string>} process.callback.result.directories The list of all subdirectories that were found.
- * @cfg {Array.<string>} process.callback.result.files The list of all files within the directory that were found.
+ * @cfg {Object} process.callback.result The result file list.
+ * @cfg {Array.<{name:string, size:number}>} process.callback.result.directories
+ * The list of all subdirectories that were found specified as fully qualified absolute paths.
+ * @cfg {Array.<string>} process.callback.result.files
+ * The list of all files within the directory that were found specified as fully qualified absolute paths.
  */
 var RemoteDirectoryReader = function (options) {
     this._running = false;
@@ -172,14 +174,15 @@ RemoteDirectoryReader.prototype._notify = function () {
  * @param {?Object} callback.err The error object.
  */
 RemoteDirectoryReader.prototype._createWorker = function (directory, callback) {
-    winston.verbose('processing directory "%s"', this._formatFile(directory));
+    var formatted = this._formatFile(directory);
+    winston.verbose('processing directory "%s"', formatted);
 
     this._processDirectory(directory, function (err) {
         this._tasksDone++;
         this._notify();
 
         if (err) {
-            winston.error('error processing directory "%s" (%s)', this._formatFile(directory), err.toString());
+            winston.error('error processing directory "%s" (%s)', formatted, err.toString());
             winston.debug('output was: ' + err.output);
             this._errors.push({
                 directory: directory,
@@ -187,7 +190,7 @@ RemoteDirectoryReader.prototype._createWorker = function (directory, callback) {
             });
             callback(err);
         } else {
-            winston.silly('successfully processed directory "%s"', this._formatFile(directory));
+            winston.silly('successfully processed directory "%s"', formatted);
             callback();
         }
     }.bind(this));
@@ -204,13 +207,14 @@ RemoteDirectoryReader.prototype._createWorker = function (directory, callback) {
  * @param {{files:Array.<string>,directories:Array.<string>}} callback.res The result object.
  */
 RemoteDirectoryReader.prototype._processDirectory = function (directory, callback) {
-    winston.debug('processing directory "%s"', this._formatFile(directory));
+    var formatted = this._formatFile(directory);
+    winston.debug('processing directory "%s"', formatted);
 
     this._process(directory, function (err, res) {
         if (!err) {
             winston.debug(
                 'found %d files in directory "%s"',
-                res.files.length, this._formatFile(directory)
+                res.files.length, formatted
             );
             this._fileList.push.apply(this._fileList, res.files);
             res.directories.forEach(this._enqueue, this);

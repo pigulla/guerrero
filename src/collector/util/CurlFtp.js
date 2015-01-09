@@ -4,8 +4,10 @@ var childprocess = require('child_process'),
 var _ = require('lodash'),
     filesize = require('filesize'),
     S = require('string'),
-    shellquote = require('shell-quote').quote,
+    shellquote = require('shell-quote'),
     winston = require('winston');
+
+var CliHelper = require('../../util/CliHelper');
 
 /**
  * A lightweight wrapper around the `curl` command line utility for FTP connections.
@@ -32,23 +34,25 @@ function CurlFtp(options) {
 }
 
 /**
- * Generates the command line string to execute `curl`.
+ * Generates the command line string to have `curl` download the given file.
  *
  * @private
  * @param {string} url The url of the file.
  * @param {number} size The size of the chunk.
- * @param {boolean} [hidePassword=false] If `true`, mask the password (e.g., when logging).
+ * @param {boolean} [maskPassword=false] If `true`, mask the password (e.g., when logging).
  * @return {string}
  */
-CurlFtp.prototype._getCliCommand = function (url, size, hidePassword) {
-    var password = hidePassword ? this.opts.password.replace(/./g, 'X') : this.opts.password,
-        args = [
-            '--no-epsv', '--silent', '--speed-time 1',
-            '--user ' + shellquote([this.opts.user + ':' + password]),
-            '--range 0-' + (size - 1)
-        ];
+CurlFtp.prototype._getDownloadCommand = function (url, size, maskPassword) {
+    var password = maskPassword ? CliHelper.MASKED_PASSWORD : this.opts.password,
+        args = new CliHelper({ separator: ' ' }).set({
+            'no-epsv': true,
+            silent: true,
+            'speed-time': 1,
+            user: this.opts.user + ':' + password,
+            range: '0-' + (size - 1)
+        });
 
-    return util.format('curl %s %s', args.join(' '), shellquote([url]));
+    return util.format('curl %s %s', args.toString(), shellquote.quote([url]));
 };
 
 /**
@@ -67,13 +71,13 @@ CurlFtp.prototype.downloadFileChunk = function (file, size, callback) {
             'ftp://%s:%s%s',
             this.opts.host, this.opts.port, S(file).ensureLeft('/').s
         ),
-        cmd = this._getCliCommand(url, size),
+        cmd = this._getDownloadCommand(url, size),
         options = {
             maxBuffer: size,
             encoding: 'binary'
         };
 
-    winston.silly('executing "%s"', this._getCliCommand(file, size, true));
+    winston.silly('executing "%s"', this._getDownloadCommand(file, size, true));
     childprocess.exec(cmd, options, function (err, stdout, stderr) {
         if (err) {
             winston.error('command failed: %s', err.toString());

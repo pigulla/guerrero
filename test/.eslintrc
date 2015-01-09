@@ -1,0 +1,6 @@
+{
+    "globals": {
+        "rootRequire": false,
+        "rootRewire": false
+    }
+}

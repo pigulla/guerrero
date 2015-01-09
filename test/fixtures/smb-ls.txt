@@ -10,4 +10,4 @@
   KoM'AH - Permian Organsim.mp3       A 15440248  Tue Dec 11 08:59:00 2012
   KoM'AH - Resonator.mp3              A  9703758  Tue Dec 11 08:58:33 2012
 
-		52474 blocks of size 4194304. 913 blocks available
+		52474 blocks of size 4194304. 4646 blocks available

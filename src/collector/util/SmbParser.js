@@ -30,7 +30,7 @@ var SmbParser = {};
  *
  * @static
  * @param {string} output
- * @return {Object.<{total:number,blocks:Object.<string,number>}>}
+ * @return {{total:number,blocks:Object.<string,number>}}
  */
 SmbParser.du = function (output) {
     var result = {

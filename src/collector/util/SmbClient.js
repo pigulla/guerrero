@@ -6,6 +6,8 @@ var _ = require('lodash'),
     shellquote = require('shell-quote').quote,
     winston = require('winston');
 
+var CliHelper = require('../../util/CliHelper');
+
 /**
  * A lightweight wrapper around the `smbclient` command line utility.
  *
@@ -40,6 +42,30 @@ SmbClient.prototype._escape = function (str) {
 };
 
 /**
+ * Builds the Samba command string for downloading the given file.
+ *
+ * @private
+ * @param {string} file The full path of the file.
+ * @param {number} size The minimum size of the chunk.
+ * @param {boolean} [maskPassword=false] If set, replace the password with a fixed length dummy string.
+ * @return {string}
+ */
+SmbClient.prototype._buildGetCommand = function (file, size, maskPassword) {
+    var argsStr = new CliHelper().set({
+            stdout: true,
+            username: this._username ? this._username : false,
+            password: (this._username && this._password) ? this._password : false,
+            guest: !this._username
+        }).mask('password', maskPassword).toString(),
+        path = util.format('smb:%s%s', this._service, file);
+
+    return util.format(
+        'smbget %s %s | head --bytes=%d',
+        argsStr, shellquote([path]), size
+    );
+};
+
+/**
  * Downloads part of a file.
  *
  * @param {string} file The full path of the file to download.
@@ -49,24 +75,8 @@ SmbClient.prototype._escape = function (str) {
  * @param {Buffer} callback.res The raw data.
  */
 SmbClient.prototype.downloadFileChunk = function (file, size, callback) {
-    var path = util.format('smb:%s%s', this._service, file),
-        args = ['--stdout'];
-
-    // prepend username/password or guest options
-    if (this._username) {
-        args.push('--username=' + this._username);
-
-        if (this._password) {
-            args.push('--password=' + this._password);
-        }
-    } else {
-        args.push('--guest');
-    }
-
-    var cmd = util.format(
-            'smbget %s %s | head --bytes=%d',
-            shellquote(args), shellquote([path]), size
-        ),
+    var cmd = this._buildGetCommand(file, size),
+        logCmd = this._buildGetCommand(file, size, true),
         // Yes, the "binary" encoding type is deprecated. Please check out this question on SO why we use it anyway:
         // http://stackoverflow.com/questions/17563977
         options = {
@@ -74,8 +84,7 @@ SmbClient.prototype.downloadFileChunk = function (file, size, callback) {
             encoding: 'binary'
         };
 
-    // TODO: do not show password
-    winston.silly('executing "%s"', cmd);
+    winston.silly('executing "%s"', logCmd);
     childprocess.exec(cmd, options, function (err, stdout, stderr) {
         if (err) {
             winston.error('command failed', err);
@@ -83,33 +92,36 @@ SmbClient.prototype.downloadFileChunk = function (file, size, callback) {
             callback(err);
         } else {
             winston.silly(
-                'download of "%s" complete (%s read)',
-                path, filesize(stdout.length, 1, false)
+                'download of "smb:%s%s" complete (%s read)',
+                this._service, file, filesize(stdout.length, 1, false)
             );
+            // TODO: why is stdout wrapped in a new buffer?
             callback(null, new Buffer(stdout, 'binary'));
         }
-    });
+    }.bind(this));
 };
 
 /**
- * Generates the command line string to execute `smbclient` with.
+ * Generates the command line string to execute `smbclient` with for the given directory.
  *
  * @private
  * @param {string} directory The directory in which to execute the command.
  * @param {string} command The command itself.
- * @param {boolean} [hidePassword=false] If `true`, mask the password (e.g., when logging).
+ * @param {boolean} [maskPassword=false] If `true`, mask the password (e.g., when logging).
  * @return {Array.<string>}
  */
-SmbClient.prototype._getCliArgs = function (directory, command, hidePassword) {
-    var args = [this._service, '--no-pass', '--directory=' + directory, '--command=' + command];
-
-    // optional configuration parameters
-    if (this._username) {
-        args.push('--user=' + this._username);
-    }
+SmbClient.prototype._getClientArgs = function (directory, command, maskPassword) {
+    var parameters = new CliHelper().set({
+            'no-pass': !!this._username,
+            directory: directory,
+            command: command,
+            user: this._username ? this._username : false
+        }).toArray(),
+        args = [this._service].concat(parameters);
 
     if (this._password) {
-        args.splice(1, 0, hidePassword ? this._password.replace(/./g, 'X') : this._password);
+        // The password is not a named parameter but the second argument (after the service name)
+        args.splice(1, 0, maskPassword ? CliHelper.MASKED_PASSWORD : this._password);
     }
 
     return args;
@@ -126,29 +138,30 @@ SmbClient.prototype._getCliArgs = function (directory, command, hidePassword) {
  * @param {string} callback.stdout
  */
 SmbClient.prototype._executeRemoteCommand = function (directory, command, callback) {
-    var args = this._getCliArgs(directory, command),
-        logArgStr = this._getCliArgs(directory, command, true).join(' '),
-        proc,
+    var args = this._getClientArgs(directory, command),
+        logArgStr = this._getClientArgs(directory, command, true).join(' '),
+        process,
         stdout = '',
         stderr = '';
 
     winston.silly('executing command "smbclient %s"', logArgStr);
-    proc = childprocess.spawn('smbclient', args);
+    process = childprocess.spawn('smbclient', args);
 
-    proc.stdout.on('data', function (data) {
+    process.stdout.on('data', function (data) {
         stdout += data;
     });
 
-    proc.stderr.on('data', function (data) {
+    process.stderr.on('data', function (data) {
         stderr += data;
     });
 
-    proc.on('close', function (code, signal) {
+    process.on('close', function (code, signal) {
         if (code === 0) {
             callback(null, stdout);
         } else {
             var error = new Error('Program terminated with exit code ' + code);
             error.output = stderr;
+            error.code = code;
             callback(error);
         }
     });
