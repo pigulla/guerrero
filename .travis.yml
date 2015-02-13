@@ -1,0 +1,9 @@
+language: node_js
+branches:
+  only:
+    - master
+node_js:
+  - "iojs-v1.2.0"
+  - "0.12"
+  - "0.10"
+install: npm install
