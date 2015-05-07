@@ -112,7 +112,7 @@ SmbClient.prototype.downloadFileChunk = function (file, size, callback) {
  */
 SmbClient.prototype._getClientArgs = function (directory, command, maskPassword) {
     var parameters = new CliHelper().set({
-            'no-pass': !!this._username,
+            'no-pass': !this._password,
             directory: directory,
             command: command,
             user: this._username ? this._username : false
@@ -156,6 +156,8 @@ SmbClient.prototype._executeRemoteCommand = function (directory, command, callba
     });
 
     process.on('close', function (code, signal) {
+        winston.silly('command "smbclient %s" completed %s', logArgStr, code === 0 ? 'successfully' : 'with error');
+
         if (code === 0) {
             callback(null, stdout);
         } else {

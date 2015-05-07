@@ -227,7 +227,7 @@ AbstractCollector.prototype.execute = function (directory, callback) {
             async.eachLimit(files, self.concurrency, function (file, cb) {
                 self.loadMediaInfo(file.name, function (err, data) {
                     if (err) {
-                        winston.error('could not get info for file "%s" (%s)', file, err.toString());
+                        winston.error('could not get info for file "%s" (%s)', file.name, err.toString());
                         self.emit('problem', file, err.toString());
                     } else {
                         file.info = self._extractMediaInfo(file.name, data);
@@ -269,7 +269,7 @@ AbstractCollector.prototype._extractMediaInfo = function (fileName, data) {
  * @private
  * @param {string} fileName The name of the file.
  * @param {Array.<minimatch.Minimatch>} patterns The patterns to check against.
- * @returns {string|boolean} Returns the pattern string that matched or `false` if `patterns` had no entries or none of
+ * @returns {?string} Returns the pattern string that matched or `null` if `patterns` had no entries or none of
  * them matched.
  */
 AbstractCollector.prototype._getFirstMatchingPattern = function (fileName, patterns) {
@@ -279,7 +279,7 @@ AbstractCollector.prototype._getFirstMatchingPattern = function (fileName, patte
         }
     }
 
-    return false;
+    return null;
 };
 
 /**

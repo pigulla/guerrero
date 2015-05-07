@@ -176,6 +176,11 @@ MediaInfoNormalizer.prototype._parseSamplingRate = function (str) {
  * @throws Error If `str` could not be parsed and {@link #cfg-bail} is enabled.
  */
 MediaInfoNormalizer.prototype._parseDuration = function (str) {
+    if (!/^(\d+h\s?)?(\d+mn\s?)?(\d+s\s?)?(\d+ms\s?)?$/.test(str)) {
+        this._warn('unparsable time string "%s"', str);
+        return null;
+    }
+
     var parts = str.split(' '),
         result = 0,
         i,
@@ -190,7 +195,7 @@ MediaInfoNormalizer.prototype._parseDuration = function (str) {
 
     for (i = 0; i < parts.length; ++i) {
         part = parts[i];
-        matches = part.match(/^(\d+)(\w+)$/);
+        matches = part.match(/^(\d+)(\w*)$/);
 
         if (!factor.hasOwnProperty(matches[2])) {
             this._warn('unparsable time unit "%s"', matches[2]);
@@ -215,12 +220,16 @@ MediaInfoNormalizer.prototype._parseDuration = function (str) {
  * @param {string} str The input string.
  * @param {string} unit The expected unit.
  * @param {string=} spaceSep An optional separator used within the number part of the string.
+ * @param {boolean=} siPrefixes Try the most common SI prefixes, i.e. 'k', 'm' and 'g'.
  * @return {?number} Returns the parsed value or `null` if it could not be parsed.
  * @throws Error If `str` could not be parsed and {@link #cfg-bail} is enabled.
  */
-MediaInfoNormalizer.prototype._parseIntUnit = function (str, unit, spaceSep) {
-    var regexp = new RegExp('^(\\d{1,3}(?:' + (spaceSep ? '\\s' : '') + '\\d{3})*) ' + unit + '$'),
-        matches = str.match(regexp);
+MediaInfoNormalizer.prototype._parseIntUnit = function (str, unit, spaceSep, siPrefixes) {
+    var siGroup = siPrefixes ? '(k|m|g)' : '',
+        regexp = new RegExp('^(\\d{1,3}(?:' + (spaceSep ? '\\s' : '') + '\\d{3})*) ' + siGroup + unit + '$', 'i'),
+        matches = str.match(regexp),
+        siMultiplier = { k: 10e3, m: 10e6, g: 10e9},
+        value;
 
     if (!matches) {
         this._warn('unparsable int value "%s"', str);
@@ -231,7 +240,7 @@ MediaInfoNormalizer.prototype._parseIntUnit = function (str, unit, spaceSep) {
         matches[1] = matches[1].replace(/\s/g, '');
     }
 
-    return parseInt(matches[1], 10);
+    return parseInt(matches[1], 10) * (matches[2] ? (siMultiplier[matches[2].toLowerCase()]) : 1);
 };
 
 /**
@@ -240,19 +249,22 @@ MediaInfoNormalizer.prototype._parseIntUnit = function (str, unit, spaceSep) {
  * @private
  * @param {string} str The input string.
  * @param {string} unit The expected unit.
+ * @param {boolean=} siPrefixes Try the most common SI prefixes, i.e. 'k', 'm' and 'g'.
  * @return {?number} Returns the parsed value or `null` if it could not be parsed.
  * @throws Error If `str` could not be parsed and {@link #cfg-bail} is enabled.
  */
-MediaInfoNormalizer.prototype._parseFloatUnit = function (str, unit) {
-    var regexp = new RegExp('^(\\d+\\.\\d+) ' + unit + '$'),
-        matches = str.match(regexp);
+MediaInfoNormalizer.prototype._parseFloatUnit = function (str, unit, siPrefixes) {
+    var siGroup = siPrefixes ? '(k|m|g)' : '',
+        regexp = new RegExp('^(\\d+\\.\\d+) ' + siGroup + unit + '$'),
+        matches = str.match(regexp),
+        siMultiplier = { k: 10e3, m: 10e6, g: 10e9};
 
     if (!matches) {
         this._warn('unparsable float value "%s"', str);
         return null;
     }
 
-    return parseFloat(matches[1]);
+    return parseFloat(matches[1]) * (matches[2] ? (siMultiplier[matches[2].toLowerCase()]) : 1);
 };
 
 /**
@@ -305,7 +317,7 @@ MediaInfoNormalizer.prototype._normalizeTrack = function (track) {
                 break;
 
             case 'format_settings__reframes':
-                track[k] = this._parseIntUnit(v, 'frames');
+                track[k] = this._parseIntUnit(v, 'frames?');
                 break;
 
             case 'channel_s_':
@@ -335,31 +347,41 @@ MediaInfoNormalizer.prototype._normalizeTrack = function (track) {
             case 'channel_positions':
             case 'chroma_subsampling':
             case 'codec_id':
+            case 'codec_id_hint':
             case 'codec_id_info':
             case 'color_primaries':
             case 'color_space':
             case 'compression_mode':
             case 'display_aspect_ratio':
             case 'encoded_application_url':
+            case 'encoded_date':
             case 'encoding_settings':
             case 'format':
             case 'format_info':
             case 'format_profile':
             case 'format_settings__endianness':
+            case 'format_settings__gop':
+            case 'format_version':
             case 'frame_rate_mode':
             case 'language':
             case 'matrix_coefficients':
             case 'mode':
             case 'mode_extension':
             case 'muxing_mode':
+            case 'number_of_frames':
+            case 'number_of_bytes':
             case 'original_display_aspect_ratio':
             case 'scan_type':
             case 'standard':
+            case 'tagged_date':
             case 'title':
             case 'transfer_characteristics':
             case 'type':
             case 'writing_application':
             case 'writing_library':
+            case '_statistics_tags':
+            case '_statistics_writing_app':
+            case '_statistics_writing_date_utc':
                 break;
 
             default:
@@ -393,7 +415,7 @@ MediaInfoNormalizer.prototype._normalizeInfo = function (info) {
                 break;
 
             case 'overall_bit_rate':
-                info[k] = this._parseIntUnit(v, 'bps', '\\s');
+                info[k] = this._parseIntUnit(v, 'bps', '\\s', true);
                 break;
 
             case 'encoded_date':
@@ -401,19 +423,30 @@ MediaInfoNormalizer.prototype._normalizeInfo = function (info) {
                 info[k] = +new time.Date(v.substring(timezone.length + 1), timezone);
                 break;
 
+            case 'codec_id':
             case 'complete_name':
+            case 'copyright':
             case 'format':
+            case 'format_profile':
             case 'format_version':
             case 'movie_name':
+            case 'number_of_frames':
+            case 'number_of_bytes':
             case 'overall_bit_rate_mode':
+            case 'performer':
+            case 'tagged_date':
+            case 'tagging_application':
             case 'tracks':
             case 'unique_id':
             case 'writing_application':
             case 'writing_library':
+            case '_statistics_tags':
+            case '_statistics_writing_app':
+            case '_statistics_writing_date_utc':
                 break;
 
             default:
-                winston.warn('unhandled track property: "%s" with value "%s"', k, v);
+                winston.warn('unhandled info property: "%s" with value "%s"', k, v);
         }
     }, this);
 
